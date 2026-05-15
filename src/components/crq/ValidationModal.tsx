@@ -1,6 +1,6 @@
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { CRQRecord, STATUS_STYLES } from "./data";
-import { CheckCircle2, XCircle, Ban, X, Cpu, Activity, Network } from "lucide-react";
+import { CheckCircle2, XCircle, Ban, Cpu, Activity, Network } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
