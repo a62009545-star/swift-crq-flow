@@ -21,13 +21,13 @@ export function ValidationModal({ crq, onClose }: { crq: CRQRecord | null; onClo
   if (!crq) return null;
   return (
     <Dialog open={!!crq} onOpenChange={(o) => !o && onClose()}>
-      <DialogContent className="max-w-5xl p-0 gap-0 overflow-hidden" showCloseButton={false}>
+      <DialogContent className="max-w-5xl p-0 gap-0 overflow-hidden">
         <div className="sticky top-0 z-10 bg-white border-b border-slate-100 px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <span className="font-mono text-sm font-semibold text-slate-800">{crq.id}</span>
             <span className={cn("text-[11px] px-2 py-0.5 rounded-full", STATUS_STYLES[crq.status])}>{crq.status}</span>
           </div>
-          <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-500"><X className="h-4 w-4" /></button>
+          <span className="w-8" />
         </div>
         <div className="grid grid-cols-12 gap-0">
           <div className="col-span-12 md:col-span-5 border-r border-slate-100 p-5 space-y-3">
