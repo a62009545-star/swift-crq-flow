@@ -69,23 +69,43 @@ export type Plan = {
 };
 
 export const PLANS: Plan[] = [
-  { id: "CEN/AC/CRD-A/MOB/06032026/002", type: "Card Addition", description: "test change", crqs: [] },
+  { id: "CEN/AC/CRD-A/MOB/06032026/002", type: "Card Addition", description: "test change", crqs: [
+    { id: "CRQ000005983410", status: "Approved", olmid: "B0945123", reviewStart: "06-Mar-2026 09:00", reviewEnd: "06-Mar-2026 09:30", impact: "Non Service Affecting", vendor: "NOKIA", location: "GURGAON-GRG" },
+    { id: "CRQ000005983411", status: "Pause", olmid: "B1056234", reviewStart: "06-Mar-2026 10:00", reviewEnd: "06-Mar-2026 10:30", impact: "Service Affecting", vendor: "CISCO", location: "DELHI-DEL" },
+  ]},
   { id: "CEN/AC/CRD-A/MOB/10032026/001", type: "Card Addition", description: "test change", crqs: [
     { id: "CRQ000005983526", status: "Pause", olmid: "B0096168", reviewStart: "15-May-2026 12:06", reviewEnd: "15-May-2026 12:06", impact: "Non Service Affecting", vendor: "ALCATEL", location: "GURGAON-GRG" },
     { id: "CRQ000005983527", status: "Approved", olmid: "B0316607", reviewStart: "20-Feb-2026 01:00", reviewEnd: "20-Feb-2026 01:30", impact: "Service Affecting", vendor: "NOKIA", location: "MUMBAI-BOM" },
     { id: "CRQ000005983528", status: "Canceled", olmid: "B0542190", reviewStart: "18-Feb-2026 09:00", reviewEnd: "18-Feb-2026 09:30", impact: "Non Service Affecting", vendor: "ERICSSON", location: "DELHI-DEL" },
+    { id: "CRQ000005983529", status: "In Review", olmid: "B0612345", reviewStart: "10-Mar-2026 03:00", reviewEnd: "10-Mar-2026 03:45", impact: "Service Affecting", vendor: "NOKIA", location: "BANGALORE-BLR" },
+    { id: "CRQ000005983530", status: "Non Service Affecting", olmid: "B0723451", reviewStart: "10-Mar-2026 06:00", reviewEnd: "10-Mar-2026 06:30", impact: "Non Service Affecting", vendor: "CISCO", location: "CHENNAI-MAA" },
   ]},
   { id: "CEN/AC/CRD-A/B2B/12032026/001", type: "Card Addition", description: "test change", crqs: [
     { id: "CRQ000005983601", status: "In Review", olmid: "B0612345", reviewStart: "01-Mar-2026 08:00", reviewEnd: "01-Mar-2026 08:30", impact: "Service Affecting", vendor: "CISCO", location: "PUNE-PNQ" },
+    { id: "CRQ000005983602", status: "Approved", olmid: "B0723451", reviewStart: "12-Mar-2026 02:00", reviewEnd: "12-Mar-2026 02:30", impact: "Non Service Affecting", vendor: "NOKIA", location: "PUNE-PNQ" },
+    { id: "CRQ000005983603", status: "Pause", olmid: "B0834512", reviewStart: "12-Mar-2026 04:00", reviewEnd: "12-Mar-2026 04:30", impact: "Service Affecting", vendor: "ALCATEL", location: "HYDERABAD-HYD" },
   ]},
   { id: "CEN/AC/CRD-A/MOB/16032026/001", type: "Card Addition", description: "test change", crqs: [
     { id: "CRQ000005983710", status: "Approved", olmid: "B0723451", reviewStart: "16-Mar-2026 11:00", reviewEnd: "16-Mar-2026 11:45", impact: "Non Service Affecting", vendor: "NOKIA", location: "GURGAON-GRG" },
     { id: "CRQ000005983711", status: "In Review", olmid: "B0834512", reviewStart: "16-Mar-2026 12:00", reviewEnd: "16-Mar-2026 12:30", impact: "Service Affecting", vendor: "ALCATEL", location: "GURGAON-GRG" },
+    { id: "CRQ000005983712", status: "Canceled", olmid: "B0945123", reviewStart: "16-Mar-2026 14:00", reviewEnd: "16-Mar-2026 14:30", impact: "Non Service Affecting", vendor: "ERICSSON", location: "KOLKATA-CCU" },
+    { id: "CRQ000005983713", status: "Approved", olmid: "B1056234", reviewStart: "16-Mar-2026 15:00", reviewEnd: "16-Mar-2026 15:30", impact: "Service Affecting", vendor: "CISCO", location: "AHMEDABAD-AMD" },
   ]},
-  { id: "CEN/AC/CRD-A/MOB/16032026/002", type: "Card Addition", description: "test change", crqs: [] },
-  { id: "CEN/AC/CRD-A/MOB/16032026/003", type: "Card Addition", description: "test change", crqs: [] },
-  { id: "CEN/AC/CRD-A/MOB/16042026/003", type: "Card Addition", description: "TEST", crqs: [] },
-  { id: "MPL/T5/TRIB1/MOB/01132025/002", type: "TR to IP - RING 10G", description: "TEST", crqs: [] },
+  { id: "CEN/AC/CRD-A/MOB/16032026/002", type: "Card Addition", description: "Cross-connect provisioning", crqs: [
+    { id: "CRQ000005983801", status: "In Review", olmid: "A1D5PXR6", reviewStart: "16-Mar-2026 18:00", reviewEnd: "16-Mar-2026 18:45", impact: "Service Affecting", vendor: "NOKIA", location: "MUMBAI-BOM" },
+  ]},
+  { id: "CEN/AC/CRD-A/MOB/16032026/003", type: "Card Addition", description: "Backbone uplink upgrade", crqs: [
+    { id: "CRQ000005983902", status: "Approved", olmid: "B0095276", reviewStart: "16-Mar-2026 20:00", reviewEnd: "16-Mar-2026 20:30", impact: "Non Service Affecting", vendor: "CISCO", location: "DELHI-DEL" },
+    { id: "CRQ000005983903", status: "Pause", olmid: "B0096168", reviewStart: "16-Mar-2026 22:00", reviewEnd: "16-Mar-2026 22:30", impact: "Service Affecting", vendor: "NOKIA", location: "DELHI-DEL" },
+  ]},
+  { id: "CEN/AC/CRD-A/MOB/16042026/003", type: "Card Addition", description: "Edge router refresh", crqs: [
+    { id: "CRQ000005984010", status: "In Review", olmid: "B0277812", reviewStart: "16-Apr-2026 09:00", reviewEnd: "16-Apr-2026 09:30", impact: "Service Affecting", vendor: "ALCATEL", location: "BANGALORE-BLR" },
+  ]},
+  { id: "MPL/T5/TRIB1/MOB/01132025/002", type: "TR to IP - RING 10G", description: "TR migration to IP ring 10G", crqs: [
+    { id: "CRQ000005984120", status: "Approved", olmid: "B0318792", reviewStart: "13-Jan-2026 01:00", reviewEnd: "13-Jan-2026 01:30", impact: "Service Affecting", vendor: "NOKIA", location: "CHENNAI-MAA" },
+    { id: "CRQ000005984121", status: "Non Service Affecting", olmid: "B0316607", reviewStart: "13-Jan-2026 02:00", reviewEnd: "13-Jan-2026 02:30", impact: "Non Service Affecting", vendor: "ERICSSON", location: "CHENNAI-MAA" },
+    { id: "CRQ000005984122", status: "In Review", olmid: "B0421987", reviewStart: "13-Jan-2026 03:00", reviewEnd: "13-Jan-2026 03:30", impact: "Service Affecting", vendor: "CISCO", location: "CHENNAI-MAA" },
+  ]},
 ];
 
 export type Task = {
