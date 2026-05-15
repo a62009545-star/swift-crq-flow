@@ -69,23 +69,43 @@ export type Plan = {
 };
 
 export const PLANS: Plan[] = [
-  { id: "CEN/AC/CRD-A/MOB/06032026/002", type: "Card Addition", description: "test change", crqs: [] },
+  { id: "CEN/AC/CRD-A/MOB/06032026/002", type: "Card Addition", description: "test change", crqs: [
+    { id: "CRQ000005983410", status: "Approved", olmid: "B0945123", reviewStart: "06-Mar-2026 09:00", reviewEnd: "06-Mar-2026 09:30", impact: "Non Service Affecting", vendor: "NOKIA", location: "GURGAON-GRG" },
+    { id: "CRQ000005983411", status: "Pause", olmid: "B1056234", reviewStart: "06-Mar-2026 10:00", reviewEnd: "06-Mar-2026 10:30", impact: "Service Affecting", vendor: "CISCO", location: "DELHI-DEL" },
+  ]},
   { id: "CEN/AC/CRD-A/MOB/10032026/001", type: "Card Addition", description: "test change", crqs: [
     { id: "CRQ000005983526", status: "Pause", olmid: "B0096168", reviewStart: "15-May-2026 12:06", reviewEnd: "15-May-2026 12:06", impact: "Non Service Affecting", vendor: "ALCATEL", location: "GURGAON-GRG" },
     { id: "CRQ000005983527", status: "Approved", olmid: "B0316607", reviewStart: "20-Feb-2026 01:00", reviewEnd: "20-Feb-2026 01:30", impact: "Service Affecting", vendor: "NOKIA", location: "MUMBAI-BOM" },
     { id: "CRQ000005983528", status: "Canceled", olmid: "B0542190", reviewStart: "18-Feb-2026 09:00", reviewEnd: "18-Feb-2026 09:30", impact: "Non Service Affecting", vendor: "ERICSSON", location: "DELHI-DEL" },
+    { id: "CRQ000005983529", status: "In Review", olmid: "B0612345", reviewStart: "10-Mar-2026 03:00", reviewEnd: "10-Mar-2026 03:45", impact: "Service Affecting", vendor: "NOKIA", location: "BANGALORE-BLR" },
+    { id: "CRQ000005983530", status: "Non Service Affecting", olmid: "B0723451", reviewStart: "10-Mar-2026 06:00", reviewEnd: "10-Mar-2026 06:30", impact: "Non Service Affecting", vendor: "CISCO", location: "CHENNAI-MAA" },
   ]},
   { id: "CEN/AC/CRD-A/B2B/12032026/001", type: "Card Addition", description: "test change", crqs: [
     { id: "CRQ000005983601", status: "In Review", olmid: "B0612345", reviewStart: "01-Mar-2026 08:00", reviewEnd: "01-Mar-2026 08:30", impact: "Service Affecting", vendor: "CISCO", location: "PUNE-PNQ" },
+    { id: "CRQ000005983602", status: "Approved", olmid: "B0723451", reviewStart: "12-Mar-2026 02:00", reviewEnd: "12-Mar-2026 02:30", impact: "Non Service Affecting", vendor: "NOKIA", location: "PUNE-PNQ" },
+    { id: "CRQ000005983603", status: "Pause", olmid: "B0834512", reviewStart: "12-Mar-2026 04:00", reviewEnd: "12-Mar-2026 04:30", impact: "Service Affecting", vendor: "ALCATEL", location: "HYDERABAD-HYD" },
   ]},
   { id: "CEN/AC/CRD-A/MOB/16032026/001", type: "Card Addition", description: "test change", crqs: [
     { id: "CRQ000005983710", status: "Approved", olmid: "B0723451", reviewStart: "16-Mar-2026 11:00", reviewEnd: "16-Mar-2026 11:45", impact: "Non Service Affecting", vendor: "NOKIA", location: "GURGAON-GRG" },
     { id: "CRQ000005983711", status: "In Review", olmid: "B0834512", reviewStart: "16-Mar-2026 12:00", reviewEnd: "16-Mar-2026 12:30", impact: "Service Affecting", vendor: "ALCATEL", location: "GURGAON-GRG" },
+    { id: "CRQ000005983712", status: "Canceled", olmid: "B0945123", reviewStart: "16-Mar-2026 14:00", reviewEnd: "16-Mar-2026 14:30", impact: "Non Service Affecting", vendor: "ERICSSON", location: "KOLKATA-CCU" },
+    { id: "CRQ000005983713", status: "Approved", olmid: "B1056234", reviewStart: "16-Mar-2026 15:00", reviewEnd: "16-Mar-2026 15:30", impact: "Service Affecting", vendor: "CISCO", location: "AHMEDABAD-AMD" },
   ]},
-  { id: "CEN/AC/CRD-A/MOB/16032026/002", type: "Card Addition", description: "test change", crqs: [] },
-  { id: "CEN/AC/CRD-A/MOB/16032026/003", type: "Card Addition", description: "test change", crqs: [] },
-  { id: "CEN/AC/CRD-A/MOB/16042026/003", type: "Card Addition", description: "TEST", crqs: [] },
-  { id: "MPL/T5/TRIB1/MOB/01132025/002", type: "TR to IP - RING 10G", description: "TEST", crqs: [] },
+  { id: "CEN/AC/CRD-A/MOB/16032026/002", type: "Card Addition", description: "Cross-connect provisioning", crqs: [
+    { id: "CRQ000005983801", status: "In Review", olmid: "A1D5PXR6", reviewStart: "16-Mar-2026 18:00", reviewEnd: "16-Mar-2026 18:45", impact: "Service Affecting", vendor: "NOKIA", location: "MUMBAI-BOM" },
+  ]},
+  { id: "CEN/AC/CRD-A/MOB/16032026/003", type: "Card Addition", description: "Backbone uplink upgrade", crqs: [
+    { id: "CRQ000005983902", status: "Approved", olmid: "B0095276", reviewStart: "16-Mar-2026 20:00", reviewEnd: "16-Mar-2026 20:30", impact: "Non Service Affecting", vendor: "CISCO", location: "DELHI-DEL" },
+    { id: "CRQ000005983903", status: "Pause", olmid: "B0096168", reviewStart: "16-Mar-2026 22:00", reviewEnd: "16-Mar-2026 22:30", impact: "Service Affecting", vendor: "NOKIA", location: "DELHI-DEL" },
+  ]},
+  { id: "CEN/AC/CRD-A/MOB/16042026/003", type: "Card Addition", description: "Edge router refresh", crqs: [
+    { id: "CRQ000005984010", status: "In Review", olmid: "B0277812", reviewStart: "16-Apr-2026 09:00", reviewEnd: "16-Apr-2026 09:30", impact: "Service Affecting", vendor: "ALCATEL", location: "BANGALORE-BLR" },
+  ]},
+  { id: "MPL/T5/TRIB1/MOB/01132025/002", type: "TR to IP - RING 10G", description: "TR migration to IP ring 10G", crqs: [
+    { id: "CRQ000005984120", status: "Approved", olmid: "B0318792", reviewStart: "13-Jan-2026 01:00", reviewEnd: "13-Jan-2026 01:30", impact: "Service Affecting", vendor: "NOKIA", location: "CHENNAI-MAA" },
+    { id: "CRQ000005984121", status: "Non Service Affecting", olmid: "B0316607", reviewStart: "13-Jan-2026 02:00", reviewEnd: "13-Jan-2026 02:30", impact: "Non Service Affecting", vendor: "ERICSSON", location: "CHENNAI-MAA" },
+    { id: "CRQ000005984122", status: "In Review", olmid: "B0421987", reviewStart: "13-Jan-2026 03:00", reviewEnd: "13-Jan-2026 03:30", impact: "Service Affecting", vendor: "CISCO", location: "CHENNAI-MAA" },
+  ]},
 ];
 
 export type Task = {
@@ -97,18 +117,98 @@ export type Task = {
   taskActivity: string;
 };
 
+const DEFAULT_TASKS: Task[] = [
+  {
+    id: "CEN/AC/CRD-A/MOB/16032026/001_TASK_002",
+    neLabel: "GRG_GBT_909_1AC_M_IXREXXR233",
+    planActivity: "ip_new_equipment_activity",
+    profileTypes: ["OPERATIONS", "IMPLEMENTATION"],
+    locationCode: "GURGAON-GRG",
+    taskActivity: "ip_new_equipment_activity",
+  },
+  {
+    id: "CEN/AC/CRD-A/MOB/16032026/001_TASK_003",
+    neLabel: "MUM_BKC_412_2AC_M_IXREXXR512",
+    planActivity: "ip_card_addition",
+    profileTypes: ["PLANNING", "IMPLEMENTATION"],
+    locationCode: "MUMBAI-BOM",
+    taskActivity: "ip_card_addition_activity",
+  },
+];
+
 export const TASKS_BY_CRQ: Record<string, Task[]> = {
-  default: [
+  default: DEFAULT_TASKS,
+  CRQ000005983526: [
     {
-      id: "CEN/AC/CRD-A/MOB/16032026/001_TASK_002",
+      id: "CRQ000005983526_TASK_001",
       neLabel: "GRG_GBT_909_1AC_M_IXREXXR233",
       planActivity: "ip_new_equipment_activity",
-      profileTypes: ["OPERATIONS", "IMPLEMENTATION"],
+      profileTypes: ["OPERATIONS"],
       locationCode: "GURGAON-GRG",
       taskActivity: "ip_new_equipment_activity",
     },
   ],
+  CRQ000005983527: [
+    {
+      id: "CRQ000005983527_TASK_001",
+      neLabel: "BOM_LBS_220_1AC_M_NKMSPR101",
+      planActivity: "ip_card_swap",
+      profileTypes: ["IMPLEMENTATION", "QA"],
+      locationCode: "MUMBAI-BOM",
+      taskActivity: "ip_card_swap_activity",
+    },
+    {
+      id: "CRQ000005983527_TASK_002",
+      neLabel: "BOM_LBS_220_1AC_M_NKMSPR102",
+      planActivity: "ip_card_validation",
+      profileTypes: ["VALIDATION"],
+      locationCode: "MUMBAI-BOM",
+      taskActivity: "ip_validation_activity",
+    },
+  ],
+  CRQ000005983601: [
+    {
+      id: "CRQ000005983601_TASK_001",
+      neLabel: "PNQ_HJM_777_2AC_M_CSCASR512",
+      planActivity: "ip_b2b_provisioning",
+      profileTypes: ["PLANNING", "IMPLEMENTATION"],
+      locationCode: "PUNE-PNQ",
+      taskActivity: "ip_b2b_provisioning_activity",
+    },
+  ],
 };
+
+export type WorkflowAssignment = {
+  stage: string;
+  empId: string | null;
+  empName: string | null;
+};
+
+const wf = (ids: (string | null)[]): WorkflowAssignment[] =>
+  ASSIGNMENT_COLUMNS.map((stage, i) => {
+    const id = ids[i] ?? null;
+    const emp = id ? EMPLOYEES.find((e) => e.id === id) : null;
+    return { stage, empId: id, empName: emp?.name ?? null };
+  });
+
+export const WORKFLOW_BY_CRQ: Record<string, WorkflowAssignment[]> = {
+  CRQ000005983526: wf(["B0096168", "B0277812", "B0318792", "B0095276", "B0316607", "B0421987", "B0542190"]),
+  CRQ000005983527: wf(["B0316607", "B0421987", "B0542190", "B0612345", "B0723451", "B0834512", "B0945123"]),
+  CRQ000005983528: wf(["B0542190", "B0612345", null, null, null, null, null]),
+  CRQ000005983601: wf(["B0612345", "B0723451", "B0834512", "B0945123", "B1056234", "A1D5PXR6", "B0095276"]),
+  CRQ000005983710: wf(["B0723451", "B0834512", "B0945123", "B1056234", "A1D5PXR6", null, null]),
+  CRQ000005983711: wf(["B0834512", "B0945123", "B1056234", null, null, null, null]),
+};
+
+export const DEFAULT_WORKFLOW: WorkflowAssignment[] = wf([
+  "B0316607",
+  "B0421987",
+  "B0542190",
+  "B0612345",
+  "B0723451",
+  "B0834512",
+  "B0945123",
+]);
 
 export const STATUS_STYLES: Record<ReviewStatus, string> = {
   Pause: "bg-slate-50 text-slate-600 border border-slate-200",
