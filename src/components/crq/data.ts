@@ -97,18 +97,98 @@ export type Task = {
   taskActivity: string;
 };
 
+const DEFAULT_TASKS: Task[] = [
+  {
+    id: "CEN/AC/CRD-A/MOB/16032026/001_TASK_002",
+    neLabel: "GRG_GBT_909_1AC_M_IXREXXR233",
+    planActivity: "ip_new_equipment_activity",
+    profileTypes: ["OPERATIONS", "IMPLEMENTATION"],
+    locationCode: "GURGAON-GRG",
+    taskActivity: "ip_new_equipment_activity",
+  },
+  {
+    id: "CEN/AC/CRD-A/MOB/16032026/001_TASK_003",
+    neLabel: "MUM_BKC_412_2AC_M_IXREXXR512",
+    planActivity: "ip_card_addition",
+    profileTypes: ["PLANNING", "IMPLEMENTATION"],
+    locationCode: "MUMBAI-BOM",
+    taskActivity: "ip_card_addition_activity",
+  },
+];
+
 export const TASKS_BY_CRQ: Record<string, Task[]> = {
-  default: [
+  default: DEFAULT_TASKS,
+  CRQ000005983526: [
     {
-      id: "CEN/AC/CRD-A/MOB/16032026/001_TASK_002",
+      id: "CRQ000005983526_TASK_001",
       neLabel: "GRG_GBT_909_1AC_M_IXREXXR233",
       planActivity: "ip_new_equipment_activity",
-      profileTypes: ["OPERATIONS", "IMPLEMENTATION"],
+      profileTypes: ["OPERATIONS"],
       locationCode: "GURGAON-GRG",
       taskActivity: "ip_new_equipment_activity",
     },
   ],
+  CRQ000005983527: [
+    {
+      id: "CRQ000005983527_TASK_001",
+      neLabel: "BOM_LBS_220_1AC_M_NKMSPR101",
+      planActivity: "ip_card_swap",
+      profileTypes: ["IMPLEMENTATION", "QA"],
+      locationCode: "MUMBAI-BOM",
+      taskActivity: "ip_card_swap_activity",
+    },
+    {
+      id: "CRQ000005983527_TASK_002",
+      neLabel: "BOM_LBS_220_1AC_M_NKMSPR102",
+      planActivity: "ip_card_validation",
+      profileTypes: ["VALIDATION"],
+      locationCode: "MUMBAI-BOM",
+      taskActivity: "ip_validation_activity",
+    },
+  ],
+  CRQ000005983601: [
+    {
+      id: "CRQ000005983601_TASK_001",
+      neLabel: "PNQ_HJM_777_2AC_M_CSCASR512",
+      planActivity: "ip_b2b_provisioning",
+      profileTypes: ["PLANNING", "IMPLEMENTATION"],
+      locationCode: "PUNE-PNQ",
+      taskActivity: "ip_b2b_provisioning_activity",
+    },
+  ],
 };
+
+export type WorkflowAssignment = {
+  stage: string;
+  empId: string | null;
+  empName: string | null;
+};
+
+const wf = (ids: (string | null)[]): WorkflowAssignment[] =>
+  ASSIGNMENT_COLUMNS.map((stage, i) => {
+    const id = ids[i] ?? null;
+    const emp = id ? EMPLOYEES.find((e) => e.id === id) : null;
+    return { stage, empId: id, empName: emp?.name ?? null };
+  });
+
+export const WORKFLOW_BY_CRQ: Record<string, WorkflowAssignment[]> = {
+  CRQ000005983526: wf(["B0096168", "B0277812", "B0318792", "B0095276", "B0316607", "B0421987", "B0542190"]),
+  CRQ000005983527: wf(["B0316607", "B0421987", "B0542190", "B0612345", "B0723451", "B0834512", "B0945123"]),
+  CRQ000005983528: wf(["B0542190", "B0612345", null, null, null, null, null]),
+  CRQ000005983601: wf(["B0612345", "B0723451", "B0834512", "B0945123", "B1056234", "A1D5PXR6", "B0095276"]),
+  CRQ000005983710: wf(["B0723451", "B0834512", "B0945123", "B1056234", "A1D5PXR6", null, null]),
+  CRQ000005983711: wf(["B0834512", "B0945123", "B1056234", null, null, null, null]),
+};
+
+export const DEFAULT_WORKFLOW: WorkflowAssignment[] = wf([
+  "B0316607",
+  "B0421987",
+  "B0542190",
+  "B0612345",
+  "B0723451",
+  "B0834512",
+  "B0945123",
+]);
 
 export const STATUS_STYLES: Record<ReviewStatus, string> = {
   Pause: "bg-slate-50 text-slate-600 border border-slate-200",
