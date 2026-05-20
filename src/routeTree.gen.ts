@@ -10,33 +10,43 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as CrqCrqIdRouteImport } from './routes/crq.$crqId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CrqCrqIdRoute = CrqCrqIdRouteImport.update({
+  id: '/crq/$crqId',
+  path: '/crq/$crqId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/crq/$crqId': typeof CrqCrqIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/crq/$crqId': typeof CrqCrqIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/crq/$crqId': typeof CrqCrqIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/crq/$crqId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/crq/$crqId'
+  id: '__root__' | '/' | '/crq/$crqId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CrqCrqIdRoute: typeof CrqCrqIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +58,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/crq/$crqId': {
+      id: '/crq/$crqId'
+      path: '/crq/$crqId'
+      fullPath: '/crq/$crqId'
+      preLoaderRoute: typeof CrqCrqIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CrqCrqIdRoute: CrqCrqIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
