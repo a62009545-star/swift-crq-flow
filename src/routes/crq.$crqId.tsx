@@ -8,6 +8,7 @@ import {
   STATUS_STYLES,
   type CRQRecord,
   type Plan,
+  type Task,
 } from "@/components/crq/data";
 import { Sidebar } from "@/components/crq/Sidebar";
 import { Header } from "@/components/crq/Header";
@@ -21,7 +22,6 @@ import {
   XCircle,
   Paperclip,
   ArrowLeft,
-  CircleDot,
   Ban,
   Cpu,
   Activity,
@@ -111,7 +111,6 @@ function CrqDetail() {
               <PlanDetailsSection plan={plan!} onPreview={() => setPdfOpen(true)} />
               <CrqDetailsSection crq={crq} plan={plan!} />
               <ValidationSection />
-              <ComprehensiveSection plan={plan!} crq={crq} />
             </div>
           )}
         </div>
@@ -192,41 +191,49 @@ function PlanDetailsSection({ plan, onPreview }: { plan: Plan; onPreview: () => 
         <Field label="Assigned Team" value="IP Access — CCB North" />
         <Field label="Total CRQs" value={String(plan.crqs.length)} />
       </div>
-      <div className="text-xs font-semibold text-indigo-600 mb-2">Task Details</div>
-      <div className="overflow-x-auto scrollbar-thin border border-slate-100 rounded-lg">
-        <table className="w-full text-sm min-w-[600px]">
-          <thead>
-            <tr className="text-[11px] uppercase tracking-wide text-slate-500 bg-slate-50/60">
-              <th className="text-left font-medium py-2 px-3">Task Name</th>
-              <th className="text-left font-medium py-2 px-3">Owner</th>
-              <th className="text-left font-medium py-2 px-3">Status</th>
-              <th className="text-left font-medium py-2 px-3">Timeline</th>
-            </tr>
-          </thead>
-          <tbody>
-            {MOCK_TASKS.map((t) => (
-              <tr key={t.name} className="border-t border-slate-100 hover:bg-slate-50/60">
-                <td className="py-2 px-3 text-xs text-slate-800">{t.name}</td>
-                <td className="py-2 px-3 text-xs text-slate-600">{t.owner}</td>
-                <td className="py-2 px-3">
-                  <span
-                    className={cn(
-                      "text-[11px] px-2 py-0.5 rounded-full border",
-                      t.status === "Done" && "bg-green-50 text-green-700 border-green-200",
-                      t.status === "In Progress" && "bg-blue-50 text-blue-700 border-blue-200",
-                      t.status === "Pending" && "bg-slate-50 text-slate-600 border-slate-200",
-                    )}
-                  >
-                    {t.status}
-                  </span>
-                </td>
-                <td className="py-2 px-3 text-xs text-slate-600 whitespace-nowrap">{t.timeline}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <div className="text-xs font-semibold text-indigo-600 mb-3">Tasks per CRQ</div>
+      <div className="space-y-4">
+        {plan.crqs.map((c) => {
+          const tasks = TASKS_BY_CRQ[c.id] ?? TASKS_BY_CRQ.default;
+          return (
+            <div key={c.id} className="border border-slate-100 rounded-lg overflow-hidden">
+              <div className="flex items-center justify-between px-4 py-2 bg-slate-50/70 border-b border-slate-100">
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] uppercase tracking-wide text-slate-400">CRQ</span>
+                  <span className="font-mono text-xs text-slate-800">{c.id}</span>
+                </div>
+                <span className="text-[11px] text-slate-500">{tasks.length} task{tasks.length === 1 ? "" : "s"}</span>
+              </div>
+              <div className="divide-y divide-slate-100">
+                {tasks.map((t) => (
+                  <TaskDetailCard key={t.id} task={t} />
+                ))}
+              </div>
+            </div>
+          );
+        })}
       </div>
     </Section>
+  );
+}
+
+function TaskDetailCard({ task }: { task: Task }) {
+  return (
+    <div className="p-4 grid grid-cols-2 md:grid-cols-3 gap-4 bg-white">
+      <Field label="Task ID" value={task.id} mono />
+      <Field label="NE Label" value={task.neLabel} mono />
+      <Field label="Plan Activity Details" value={task.planActivity} />
+      <div>
+        <div className="text-[10px] uppercase tracking-wide text-slate-400 mb-1">Task Profile Type</div>
+        <div className="flex flex-wrap gap-1">
+          {task.profileTypes.map((p) => (
+            <span key={p} className="text-[10px] px-1.5 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-100">{p}</span>
+          ))}
+        </div>
+      </div>
+      <Field label="Location Code" value={task.locationCode} />
+      <Field label="Task Activity" value={task.taskActivity} />
+    </div>
   );
 }
 
@@ -250,6 +257,22 @@ function CrqDetailsSection({ crq, plan }: { crq: CRQRecord; plan: Plan }) {
         <Field label="Current Workflow Stage" value={currentStage} />
         <Field label="Approval Status" value={<span className={cn("px-2 py-0.5 rounded-full text-[11px]", STATUS_STYLES[crq.status])}>{crq.status}</span>} />
         <Field label="Vendor" value={crq.vendor} />
+        <Field label="Status" value={<span className={cn("px-2 py-0.5 rounded-full text-[11px]", STATUS_STYLES[crq.status])}>{crq.status}</span>} />
+        <Field label="Support Company - Change Coordinator" value="Bharti Airtel Ltd" />
+        <Field label="Support Organization - Change Coordinator" value="Network Operations" />
+        <Field label="Support Group Name+ - Change Coordinator" value="IP-CCB-NORTH-COORD" />
+        <Field label="Support Company - Change Implementer" value="Nokia Solutions" />
+        <Field label="Support Organization - Change Implementer" value="Field Operations" />
+        <Field label="Support Group Name+ - Change Implementer" value="IP-CCB-NORTH-IMPL" />
+        <Field label="Scheduled Implementar" value={`${crq.olmid} — Karan Mehta`} />
+        <Field label="CRQ Validated By" value="Amit Verma (B0421987)" />
+        <Field label="CRQ Validated Time" value="13-Mar-2026 11:02" />
+        <Field label="Node IP Address" value="10.142.88.21" mono />
+        <Field label="Reason for Cancellation Rejection" value="—" />
+        <Field label="Cancellation Rejection Rollback Owner" value="—" />
+        <Field label="Reason for Cancellation Rejection Deviation" value="—" />
+        <Field label="Host Name" value={(crq.location ?? "DEL") + "-CORE-01"} mono />
+        <Field label="Layer" value="Access" />
         <div className="md:col-span-2">
           <Field label="Remarks / Comments" value="Card addition validated against latest MOP. Rollback documented. Field team briefed for the execution window." />
         </div>
@@ -347,14 +370,6 @@ function ValidationPanel() {
             <div className="font-mono">2026-05-15 00:35:35</div>
           </div>
         </div>
-        <div>
-          <div className="text-xs font-semibold text-indigo-600 mb-2">Checkpoint Breakdown</div>
-          <div className="space-y-2">
-            {CHECKPOINTS.map((c) => (
-              <CheckpointCard key={c.name} cp={c} />
-            ))}
-          </div>
-        </div>
       </div>
     </div>
   );
@@ -404,117 +419,3 @@ function CheckpointCard({ cp }: { cp: Checkpoint }) {
   );
 }
 
-/* ---------- D. Comprehensive View ---------- */
-
-function ComprehensiveSection({ plan, crq }: { plan: Plan; crq: CRQRecord }) {
-  const tasks = TASKS_BY_CRQ[crq.id] ?? TASKS_BY_CRQ.default;
-  const wf = WORKFLOW_BY_CRQ[crq.id] ?? DEFAULT_WORKFLOW;
-  const successCount = CHECKPOINTS.filter((c) => c.status === "Success").length;
-  const pendingCount = CHECKPOINTS.filter((c) => c.status === "Pending").length;
-  const failedCount = CHECKPOINTS.filter((c) => c.status === "Failed").length;
-
-  return (
-    <Section title="Comprehensive View" subtitle="End-to-end CRQ lifecycle overview" defaultOpen={false}>
-      <div className="space-y-6">
-        <Sub title="Plan Details">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <Field label="Plan ID" value={plan.id} mono />
-            <Field label="Plan Type" value={plan.type} />
-            <Field label="Description" value={plan.description} />
-            <Field label="CRQs" value={String(plan.crqs.length)} />
-          </div>
-        </Sub>
-
-        <Sub title="CRQ Details">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <Field label="CRQ" value={crq.id} mono />
-            <Field label="Status" value={crq.status} />
-            <Field label="Vendor" value={crq.vendor} />
-            <Field label="Location" value={crq.location ?? "—"} />
-          </div>
-        </Sub>
-
-        <Sub title="Validation Summary">
-          <div className="grid grid-cols-3 gap-3">
-            <SummaryTile label="Success" value={successCount} tone="green" />
-            <SummaryTile label="Pending" value={pendingCount} tone="amber" />
-            <SummaryTile label="Failed" value={failedCount} tone="red" />
-          </div>
-        </Sub>
-
-        <Sub title="Workflow Timeline">
-          <ol className="relative border-l border-slate-200 ml-2 space-y-3">
-            {wf.map((w, i) => (
-              <li key={i} className="ml-4">
-                <div className="absolute -left-1.5 mt-1.5">
-                  <CircleDot className={cn("h-3 w-3", w.empId ? "text-indigo-600" : "text-slate-300")} />
-                </div>
-                <div className="text-xs font-medium text-slate-800">{w.stage}</div>
-                <div className="text-[11px] text-slate-500">{w.empId ? `${w.empName} (${w.empId})` : "Unassigned"}</div>
-              </li>
-            ))}
-          </ol>
-        </Sub>
-
-        <Sub title="Approval History">
-          <div className="space-y-2">
-            {[
-              { who: "Rahul Sharma", role: "Reviewer", action: "Approved", ts: "12-Mar-2026 09:30" },
-              { who: "Sneha Kapoor", role: "Approver", action: "Pending", ts: "—" },
-              { who: "Arjun Rao", role: "Executor", action: "Rework", ts: "14-Mar-2026 02:11" },
-            ].map((a, i) => (
-              <div key={i} className="flex items-center justify-between text-xs px-3 py-2 border border-slate-100 rounded-md bg-slate-50/50">
-                <div><span className="font-medium text-slate-800">{a.who}</span> <span className="text-slate-400">— {a.role}</span></div>
-                <div className="text-slate-600">{a.action}</div>
-                <div className="text-slate-400">{a.ts}</div>
-              </div>
-            ))}
-          </div>
-        </Sub>
-
-        <Sub title="Task Progress">
-          <div className="space-y-2">
-            {tasks.map((t) => (
-              <div key={t.id} className="text-xs px-3 py-2 border border-slate-100 rounded-md bg-white flex items-center justify-between">
-                <div className="font-mono text-slate-700 truncate">{t.id}</div>
-                <div className="text-slate-500">{t.locationCode}</div>
-                <div className="text-slate-600">{t.taskActivity}</div>
-              </div>
-            ))}
-          </div>
-        </Sub>
-
-        <Sub title="Execution Summary">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <Field label="Planned Start" value={crq.reviewStart} />
-            <Field label="Planned End" value={crq.reviewEnd} />
-            <Field label="Actual Start" value="16-Mar-2026 22:04" />
-            <Field label="Outcome" value={<span className="px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200 text-[11px]">Partial — Rework</span>} />
-          </div>
-        </Sub>
-      </div>
-    </Section>
-  );
-}
-
-function Sub({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <div>
-      <div className="text-xs font-semibold text-indigo-600 mb-2">{title}</div>
-      {children}
-    </div>
-  );
-}
-
-function SummaryTile({ label, value, tone }: { label: string; value: number; tone: "green" | "amber" | "red" }) {
-  const cls =
-    tone === "green" ? "bg-green-50 text-green-700 border-green-200"
-    : tone === "amber" ? "bg-amber-50 text-amber-700 border-amber-200"
-    : "bg-red-50 text-red-700 border-red-200";
-  return (
-    <div className={cn("rounded-lg border px-4 py-3", cls)}>
-      <div className="text-[10px] uppercase tracking-wide opacity-80">{label}</div>
-      <div className="text-2xl font-semibold">{value}</div>
-    </div>
-  );
-}
