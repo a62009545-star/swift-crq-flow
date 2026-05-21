@@ -257,6 +257,22 @@ function CrqDetailsSection({ crq, plan }: { crq: CRQRecord; plan: Plan }) {
         <Field label="Current Workflow Stage" value={currentStage} />
         <Field label="Approval Status" value={<span className={cn("px-2 py-0.5 rounded-full text-[11px]", STATUS_STYLES[crq.status])}>{crq.status}</span>} />
         <Field label="Vendor" value={crq.vendor} />
+        <Field label="Status" value={<span className={cn("px-2 py-0.5 rounded-full text-[11px]", STATUS_STYLES[crq.status])}>{crq.status}</span>} />
+        <Field label="Support Company - Change Coordinator" value="Bharti Airtel Ltd" />
+        <Field label="Support Organization - Change Coordinator" value="Network Operations" />
+        <Field label="Support Group Name+ - Change Coordinator" value="IP-CCB-NORTH-COORD" />
+        <Field label="Support Company - Change Implementer" value="Nokia Solutions" />
+        <Field label="Support Organization - Change Implementer" value="Field Operations" />
+        <Field label="Support Group Name+ - Change Implementer" value="IP-CCB-NORTH-IMPL" />
+        <Field label="Scheduled Implementar" value={`${crq.olmid} — Karan Mehta`} />
+        <Field label="CRQ Validated By" value="Amit Verma (B0421987)" />
+        <Field label="CRQ Validated Time" value="13-Mar-2026 11:02" />
+        <Field label="Node IP Address" value="10.142.88.21" mono />
+        <Field label="Reason for Cancellation Rejection" value="—" />
+        <Field label="Cancellation Rejection Rollback Owner" value="—" />
+        <Field label="Reason for Cancellation Rejection Deviation" value="—" />
+        <Field label="Host Name" value={(crq.location ?? "DEL") + "-CORE-01"} mono />
+        <Field label="Layer" value="Access" />
         <div className="md:col-span-2">
           <Field label="Remarks / Comments" value="Card addition validated against latest MOP. Rollback documented. Field team briefed for the execution window." />
         </div>
