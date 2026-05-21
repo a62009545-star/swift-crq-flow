@@ -8,6 +8,7 @@ import {
   STATUS_STYLES,
   type CRQRecord,
   type Plan,
+  type Task,
 } from "@/components/crq/data";
 import { Sidebar } from "@/components/crq/Sidebar";
 import { Header } from "@/components/crq/Header";
@@ -21,7 +22,6 @@ import {
   XCircle,
   Paperclip,
   ArrowLeft,
-  CircleDot,
   Ban,
   Cpu,
   Activity,
@@ -111,7 +111,6 @@ function CrqDetail() {
               <PlanDetailsSection plan={plan!} onPreview={() => setPdfOpen(true)} />
               <CrqDetailsSection crq={crq} plan={plan!} />
               <ValidationSection />
-              <ComprehensiveSection plan={plan!} crq={crq} />
             </div>
           )}
         </div>
