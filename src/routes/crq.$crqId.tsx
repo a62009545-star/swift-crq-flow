@@ -370,14 +370,6 @@ function ValidationPanel() {
             <div className="font-mono">2026-05-15 00:35:35</div>
           </div>
         </div>
-        <div>
-          <div className="text-xs font-semibold text-indigo-600 mb-2">Checkpoint Breakdown</div>
-          <div className="space-y-2">
-            {CHECKPOINTS.map((c) => (
-              <CheckpointCard key={c.name} cp={c} />
-            ))}
-          </div>
-        </div>
       </div>
     </div>
   );
