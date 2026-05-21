@@ -191,41 +191,49 @@ function PlanDetailsSection({ plan, onPreview }: { plan: Plan; onPreview: () => 
         <Field label="Assigned Team" value="IP Access — CCB North" />
         <Field label="Total CRQs" value={String(plan.crqs.length)} />
       </div>
-      <div className="text-xs font-semibold text-indigo-600 mb-2">Task Details</div>
-      <div className="overflow-x-auto scrollbar-thin border border-slate-100 rounded-lg">
-        <table className="w-full text-sm min-w-[600px]">
-          <thead>
-            <tr className="text-[11px] uppercase tracking-wide text-slate-500 bg-slate-50/60">
-              <th className="text-left font-medium py-2 px-3">Task Name</th>
-              <th className="text-left font-medium py-2 px-3">Owner</th>
-              <th className="text-left font-medium py-2 px-3">Status</th>
-              <th className="text-left font-medium py-2 px-3">Timeline</th>
-            </tr>
-          </thead>
-          <tbody>
-            {MOCK_TASKS.map((t) => (
-              <tr key={t.name} className="border-t border-slate-100 hover:bg-slate-50/60">
-                <td className="py-2 px-3 text-xs text-slate-800">{t.name}</td>
-                <td className="py-2 px-3 text-xs text-slate-600">{t.owner}</td>
-                <td className="py-2 px-3">
-                  <span
-                    className={cn(
-                      "text-[11px] px-2 py-0.5 rounded-full border",
-                      t.status === "Done" && "bg-green-50 text-green-700 border-green-200",
-                      t.status === "In Progress" && "bg-blue-50 text-blue-700 border-blue-200",
-                      t.status === "Pending" && "bg-slate-50 text-slate-600 border-slate-200",
-                    )}
-                  >
-                    {t.status}
-                  </span>
-                </td>
-                <td className="py-2 px-3 text-xs text-slate-600 whitespace-nowrap">{t.timeline}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <div className="text-xs font-semibold text-indigo-600 mb-3">Tasks per CRQ</div>
+      <div className="space-y-4">
+        {plan.crqs.map((c) => {
+          const tasks = TASKS_BY_CRQ[c.id] ?? TASKS_BY_CRQ.default;
+          return (
+            <div key={c.id} className="border border-slate-100 rounded-lg overflow-hidden">
+              <div className="flex items-center justify-between px-4 py-2 bg-slate-50/70 border-b border-slate-100">
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] uppercase tracking-wide text-slate-400">CRQ</span>
+                  <span className="font-mono text-xs text-slate-800">{c.id}</span>
+                </div>
+                <span className="text-[11px] text-slate-500">{tasks.length} task{tasks.length === 1 ? "" : "s"}</span>
+              </div>
+              <div className="divide-y divide-slate-100">
+                {tasks.map((t) => (
+                  <TaskDetailCard key={t.id} task={t} />
+                ))}
+              </div>
+            </div>
+          );
+        })}
       </div>
     </Section>
+  );
+}
+
+function TaskDetailCard({ task }: { task: Task }) {
+  return (
+    <div className="p-4 grid grid-cols-2 md:grid-cols-3 gap-4 bg-white">
+      <Field label="Task ID" value={task.id} mono />
+      <Field label="NE Label" value={task.neLabel} mono />
+      <Field label="Plan Activity Details" value={task.planActivity} />
+      <div>
+        <div className="text-[10px] uppercase tracking-wide text-slate-400 mb-1">Task Profile Type</div>
+        <div className="flex flex-wrap gap-1">
+          {task.profileTypes.map((p) => (
+            <span key={p} className="text-[10px] px-1.5 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-100">{p}</span>
+          ))}
+        </div>
+      </div>
+      <Field label="Location Code" value={task.locationCode} />
+      <Field label="Task Activity" value={task.taskActivity} />
+    </div>
   );
 }
 
