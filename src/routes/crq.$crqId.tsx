@@ -290,6 +290,151 @@ const STATUS_ICON: Record<ValidationStatus, { icon: React.ElementType; cls: stri
   Failed: { icon: XCircle, cls: "text-red-600", pill: "bg-red-50 text-red-700 border-red-200" },
 };
 
+/* ---------- B2. Stage-wise CRQ Details ---------- */
+
+type StageDef = { name: string; fields: { label: string; value: string }[] };
+
+function buildStages(crq: CRQRecord): StageDef[] {
+  const commonCancel = [
+    { label: "Reason for Cancellation Rejection", value: "—" },
+    { label: "Cancellation Rejection Rollback Owner", value: "—" },
+    { label: "Reason for Cancellation Rejection Deviation", value: "—" },
+  ];
+  return [
+    {
+      name: "Impact Analysis",
+      fields: [
+        { label: "Status*", value: "Completed" },
+        ...commonCancel,
+        { label: "Impacted Segment", value: "Mobility Backhaul" },
+        { label: "Actual Impact", value: "Non Service Affecting" },
+        { label: "Technology**", value: "IP / MPLS" },
+        { label: "Activity Impact Analysis Done", value: "Yes" },
+        { label: "Impact Analysis Done By", value: "Amit Verma (B0421987)" },
+        { label: "Impact Analysis Done By Time", value: "11-Mar-2026 14:22" },
+        { label: "B2B Impacted*", value: "No" },
+        { label: "Impacted Circle(s)**", value: (crq.location ?? "DEL").split("-")[0] },
+        { label: "Impacted Parties*", value: "Enterprise, Mobility" },
+        { label: "OLT Details", value: "—" },
+        { label: "MSAN Count", value: "0" },
+      ],
+    },
+    {
+      name: "MOP Creation",
+      fields: [
+        { label: "Status*", value: "Completed" },
+        ...commonCancel,
+        { label: "MOP Creation Method", value: "Template Based" },
+        { label: "SOP Document", value: "SOP_CARD_ADD_v3.2.pdf" },
+        { label: "MOP Document", value: "MOP_" + crq.id + ".pdf" },
+        { label: "MOP Created By", value: "Neha Singh (B0542190)" },
+        { label: "MOP Created By Time", value: "12-Mar-2026 09:15" },
+      ],
+    },
+    {
+      name: "MOP Validation",
+      fields: [
+        { label: "Status*", value: "Completed" },
+        ...commonCancel,
+        { label: "MOP Validated By", value: "Priya Nair (B0612345)" },
+        { label: "MOP Validated By Time", value: "12-Mar-2026 18:40" },
+        { label: "MOP Validation Remark", value: "Rollback steps verified; pre/post checks aligned." },
+      ],
+    },
+    {
+      name: "Scheduling",
+      fields: [
+        { label: "Status*", value: "Scheduled" },
+        ...commonCancel,
+        { label: "Scheduled Start Date+", value: crq.reviewStart },
+        { label: "Scheduled End Date+", value: crq.reviewEnd },
+        { label: "CRQ Scheduled By", value: "Karan Mehta (B0723451)" },
+        { label: "CRQ Scheduled By Time", value: "13-Mar-2026 10:05" },
+        { label: "Activity Executed By*", value: `${crq.olmid}` },
+        { label: "Business Justification", value: "Capacity augmentation for Q2 traffic growth." },
+        { label: "L3 Approver OLM ID", value: "B0945123" },
+      ],
+    },
+    {
+      name: "Network Execution",
+      fields: [
+        { label: "Status*", value: "In Progress" },
+        ...commonCancel,
+        { label: "Activity Executed By*", value: `${crq.olmid}` },
+        { label: "Actual Start Date*+", value: "16-Mar-2026 22:00" },
+        { label: "Actual End Date*+", value: "16-Mar-2026 23:15" },
+        { label: "Actual Implementer Name", value: "Sneha Kapoor" },
+        { label: "Actual Implementer Phone No", value: "+91-98xxxxxx21" },
+        { label: "Exit Criteria Fulfilled**", value: "Yes" },
+        { label: "MOP Referred During Activity", value: "MOP_" + crq.id + ".pdf" },
+        { label: "Pre Check Done**", value: "Yes" },
+        { label: "Pre - Checks Done By", value: "Arjun Rao (B0945123)" },
+        { label: "Pre-Check Done Time", value: "16-Mar-2026 21:30" },
+        { label: "Post Check Done**", value: "Yes" },
+        { label: "Post - Checks Done By", value: "Vivek Sinha (B1056234)" },
+        { label: "Post-Check Done Time", value: "16-Mar-2026 23:25" },
+        { label: "Requested Date Deviation Reason", value: "—" },
+        { label: "Executer Location", value: crq.location ?? "—" },
+        { label: "MOP Execution Method", value: "Manual + CLI Script" },
+        { label: "CRQ approval status", value: crq.status },
+      ],
+    },
+    {
+      name: "Task Closure",
+      fields: [
+        { label: "Change Activity Done", value: "Yes" },
+        { label: "Change Activity Done Time", value: "16-Mar-2026 23:30" },
+        { label: "Completed Date", value: "17-Mar-2026 09:10" },
+        { label: "CRQ Closed By", value: "Rahul Sharma (B0316607)" },
+        { label: "CRQ Closed By Time", value: "17-Mar-2026 09:12" },
+      ],
+    },
+  ];
+}
+
+function StageDetailsSection({ crq }: { crq: CRQRecord }) {
+  const stages = buildStages(crq);
+  const [active, setActive] = useState(stages[0].name);
+  const current = stages.find((s) => s.name === active)!;
+  return (
+    <Section title="Stage-wise CRQ Details" subtitle="Field-level details captured at each workflow stage">
+      <div className="flex flex-wrap gap-2 mb-5 border-b border-slate-100 pb-3">
+        {stages.map((s) => {
+          const isActive = s.name === active;
+          return (
+            <button
+              key={s.name}
+              onClick={() => setActive(s.name)}
+              className={cn(
+                "text-xs px-3 py-1.5 rounded-lg border transition",
+                isActive
+                  ? "bg-indigo-600 text-white border-indigo-600 shadow-sm"
+                  : "bg-white text-slate-600 border-slate-200 hover:border-indigo-300 hover:text-indigo-600",
+              )}
+            >
+              {s.name}
+              <span className={cn("ml-1.5 text-[10px] px-1.5 py-0.5 rounded-full", isActive ? "bg-white/20" : "bg-slate-100 text-slate-500")}>
+                {s.fields.length}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-5">
+        {current.fields.map((f) => (
+          <Field key={f.label} label={f.label} value={f.value} mono={f.label.toLowerCase().includes("time") || f.label.toLowerCase().includes("date")} />
+        ))}
+      </div>
+    </Section>
+  );
+}
+
+const _STATUS_ICON_PLACEHOLDER: Record<ValidationStatus, { icon: React.ElementType; cls: string; pill: string }> = {
+  Success: { icon: CheckCircle2, cls: "text-green-600", pill: "bg-green-50 text-green-700 border-green-200" },
+  Pending: { icon: Clock, cls: "text-amber-600", pill: "bg-amber-50 text-amber-700 border-amber-200" },
+  Failed: { icon: XCircle, cls: "text-red-600", pill: "bg-red-50 text-red-700 border-red-200" },
+};
+
 function ValidationSection() {
   return (
     <Section title="Validation" subtitle="Checkpoint-wise validation status">
