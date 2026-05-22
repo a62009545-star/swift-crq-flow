@@ -184,6 +184,10 @@ function Field({ label, value, mono }: { label: string; value: React.ReactNode; 
 /* ---------- A. Plan Details ---------- */
 
 function PlanDetailsSection({ plan, onPreview }: { plan: Plan; onPreview: () => void }) {
+  return <PlanDetailsSectionInner plan={plan} onPreview={onPreview} />;
+}
+
+function PlanDetailsSectionInner({ plan, onPreview, crqId }: { plan: Plan; onPreview: () => void; crqId?: string }) {
   return (
     <Section
       title="Plan Details"
@@ -205,9 +209,11 @@ function PlanDetailsSection({ plan, onPreview }: { plan: Plan; onPreview: () => 
         <Field label="Assigned Team" value="IP Access — CCB North" />
         <Field label="Total CRQs" value={String(plan.crqs.length)} />
       </div>
-      <div className="text-xs font-semibold text-indigo-600 mb-3">Tasks per CRQ</div>
+      <div className="text-xs font-semibold text-indigo-600 mb-3">
+        {crqId ? `Tasks for ${crqId}` : "Tasks per CRQ"}
+      </div>
       <div className="space-y-4">
-        {plan.crqs.map((c) => {
+        {(crqId ? plan.crqs.filter((c) => c.id === crqId) : plan.crqs).map((c) => {
           const tasks = TASKS_BY_CRQ[c.id] ?? TASKS_BY_CRQ.default;
           return (
             <div key={c.id} className="border border-slate-100 rounded-lg overflow-hidden">
