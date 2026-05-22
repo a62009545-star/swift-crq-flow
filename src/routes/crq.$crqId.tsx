@@ -429,12 +429,6 @@ function StageDetailsSection({ crq }: { crq: CRQRecord }) {
   );
 }
 
-const _STATUS_ICON_PLACEHOLDER: Record<ValidationStatus, { icon: React.ElementType; cls: string; pill: string }> = {
-  Success: { icon: CheckCircle2, cls: "text-green-600", pill: "bg-green-50 text-green-700 border-green-200" },
-  Pending: { icon: Clock, cls: "text-amber-600", pill: "bg-amber-50 text-amber-700 border-amber-200" },
-  Failed: { icon: XCircle, cls: "text-red-600", pill: "bg-red-50 text-red-700 border-red-200" },
-};
-
 function ValidationSection() {
   return (
     <Section title="Validation" subtitle="Checkpoint-wise validation status">
