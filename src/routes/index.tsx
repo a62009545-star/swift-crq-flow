@@ -38,13 +38,10 @@ function Index() {
           <Toolbar fn={fn} setFn={setFn} sub={sub} setSub={setSub} view={view} setView={setView} />
         </div>
         <main className={`flex-1 transition-opacity duration-200 ${fade ? "opacity-100" : "opacity-0"}`}>
-          {step === "assignment" && <AssignmentTable />}
-          {step === "plan" && <PlanValidation />}
-          {step !== "assignment" && step !== "plan" && (
-            <div className="px-6 py-16 text-center text-slate-400 text-sm">
-              <div className="text-base font-semibold text-slate-600 mb-2">{stepLabel}</div>
-              This stage will be available once the active workflow advances.
-            </div>
+          {step === "assignment" ? (
+            <AssignmentTable />
+          ) : (
+            <PlanValidation title={stepLabel} stage={step} />
           )}
         </main>
         <Pagination />

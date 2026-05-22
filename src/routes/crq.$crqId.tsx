@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useParams } from "@tanstack/react-router";
+import { createFileRoute, Link, useParams, useSearch } from "@tanstack/react-router";
 import { useState } from "react";
 import {
   PLANS,
@@ -30,8 +30,19 @@ import {
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/crq/$crqId")({
+  validateSearch: (s: Record<string, unknown>) => ({ stage: typeof s.stage === "string" ? s.stage : undefined }),
   component: CrqDetail,
 });
+
+const STAGE_ID_TO_NAME: Record<string, string> = {
+  plan: "Plan & Inventory Validation",
+  impact: "Impact Analysis",
+  mop: "MOP Creation",
+  mopv: "MOP Validation",
+  schedule: "Scheduling",
+  exec: "Network Execution",
+  closure: "Task Closure",
+};
 
 type ValidationStatus = "Success" | "Pending" | "Failed";
 type Checkpoint = {
@@ -72,8 +83,10 @@ function findCrq(crqId: string): { plan: Plan | null; crq: CRQRecord | null } {
 
 function CrqDetail() {
   const { crqId } = useParams({ from: "/crq/$crqId" });
+  const { stage } = useSearch({ from: "/crq/$crqId" });
   const { plan, crq } = findCrq(crqId);
   const [pdfOpen, setPdfOpen] = useState(false);
+  const currentStageName = stage ? STAGE_ID_TO_NAME[stage] : undefined;
 
   return (
     <div className="min-h-screen bg-slate-50/60">
@@ -109,8 +122,8 @@ function CrqDetail() {
           ) : (
             <div className="space-y-4">
               <PlanDetailsSection plan={plan!} onPreview={() => setPdfOpen(true)} />
-              <CrqDetailsSection crq={crq} plan={plan!} />
-              <StageDetailsSection crq={crq} />
+              <CrqDetailsSection crq={crq} plan={plan!} currentStageName={currentStageName} />
+              <StageDetailsSection crq={crq} currentStageName={currentStageName} />
               <ValidationSection />
             </div>
           )}
@@ -240,9 +253,12 @@ function TaskDetailCard({ task }: { task: Task }) {
 
 /* ---------- B. CRQ Details ---------- */
 
-function CrqDetailsSection({ crq, plan }: { crq: CRQRecord; plan: Plan }) {
+function CrqDetailsSection({ crq, plan, currentStageName }: { crq: CRQRecord; plan: Plan; currentStageName?: string }) {
   const wf = WORKFLOW_BY_CRQ[crq.id] ?? DEFAULT_WORKFLOW;
   const currentStage = wf.find((w) => w.empId)?.stage ?? "Not started";
+  const stageFields = currentStageName
+    ? buildStages(crq).find((s) => s.name === currentStageName)?.fields ?? []
+    : [];
   return (
     <Section title="CRQ Details" subtitle="Full change request attributes">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5">
@@ -278,6 +294,19 @@ function CrqDetailsSection({ crq, plan }: { crq: CRQRecord; plan: Plan }) {
           <Field label="Remarks / Comments" value="Card addition validated against latest MOP. Rollback documented. Field team briefed for the execution window." />
         </div>
       </div>
+      {stageFields.length > 0 && (
+        <>
+          <div className="mt-6 mb-3 flex items-center gap-2">
+            <span className="text-[10px] uppercase tracking-wide font-semibold text-indigo-600">{currentStageName} — Stage Details</span>
+            <span className="h-px flex-1 bg-slate-100" />
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-5">
+            {stageFields.map((f) => (
+              <Field key={f.label} label={f.label} value={f.value} mono={f.label.toLowerCase().includes("time") || f.label.toLowerCase().includes("date")} />
+            ))}
+          </div>
+        </>
+      )}
     </Section>
   );
 }
@@ -392,12 +421,18 @@ function buildStages(crq: CRQRecord): StageDef[] {
   ];
 }
 
-function StageDetailsSection({ crq }: { crq: CRQRecord }) {
-  const stages = buildStages(crq);
-  const [active, setActive] = useState(stages[0].name);
-  const current = stages.find((s) => s.name === active)!;
+function StageDetailsSection({ crq, currentStageName }: { crq: CRQRecord; currentStageName?: string }) {
+  const all = buildStages(crq);
+  const cutoffIdx = currentStageName ? all.findIndex((s) => s.name === currentStageName) : -1;
+  const stages = cutoffIdx >= 0 ? all.slice(0, cutoffIdx + 1) : all;
+  const [active, setActive] = useState(stages[stages.length - 1]?.name ?? all[0].name);
+  const current = stages.find((s) => s.name === active) ?? stages[stages.length - 1];
+  if (!current) return null;
   return (
-    <Section title="Stage-wise CRQ Details" subtitle="Field-level details captured at each workflow stage">
+    <Section
+      title="Stage-wise CRQ Details"
+      subtitle={currentStageName ? `Current & previous stages up to ${currentStageName}` : "Field-level details captured at each workflow stage"}
+    >
       <div className="flex flex-wrap gap-2 mb-5 border-b border-slate-100 pb-3">
         {stages.map((s) => {
           const isActive = s.name === active;

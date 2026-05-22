@@ -7,7 +7,7 @@ import { PdfModal } from "./PdfModal";
 import { CrqDrawer } from "./CrqDrawer";
 import { Link } from "@tanstack/react-router";
 
-export function PlanValidation() {
+export function PlanValidation({ title = "Plan & Inventory Validation", stage }: { title?: string; stage?: string } = {}) {
   const [taskOpen, setTaskOpen] = useState<Set<string>>(new Set());
   const [valCrq, setValCrq] = useState<CRQRecord | null>(null);
   const [pdfOpen, setPdfOpen] = useState(false);
@@ -34,7 +34,7 @@ export function PlanValidation() {
     <div className="px-6 py-5">
       <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
         <div className="flex items-center gap-3">
-          <h2 className="text-base font-semibold text-slate-900">Plan & Inventory Validation</h2>
+          <h2 className="text-base font-semibold text-slate-900">{title}</h2>
           <span className="px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 text-xs font-medium border border-indigo-100">{rows.length}</span>
         </div>
         <div className="flex items-center bg-white rounded-lg border border-slate-200 px-3 py-2 w-72 focus-within:ring-2 focus-within:ring-indigo-200 focus-within:border-indigo-400 transition">
@@ -73,6 +73,7 @@ export function PlanValidation() {
                   key={crq.id}
                   plan={plan}
                   crq={crq}
+                  stage={stage}
                   open={taskOpen.has(crq.id)}
                   onToggle={() => toggleTask(crq.id)}
                   onEye={() => setValCrq(crq)}
@@ -95,6 +96,7 @@ export function PlanValidation() {
 function CrqFlatRow({
   plan,
   crq,
+  stage,
   open,
   onToggle,
   onEye,
@@ -103,6 +105,7 @@ function CrqFlatRow({
 }: {
   plan: Plan;
   crq: CRQRecord;
+  stage?: string;
   open: boolean;
   onToggle: () => void;
   onEye: () => void;
@@ -123,6 +126,7 @@ function CrqFlatRow({
           <Link
             to="/crq/$crqId"
             params={{ crqId: crq.id }}
+            search={stage ? { stage } : undefined}
             className="font-mono text-xs text-indigo-600 font-medium hover:text-indigo-700 hover:underline"
           >
             {crq.id}
