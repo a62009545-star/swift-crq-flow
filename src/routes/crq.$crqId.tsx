@@ -110,6 +110,7 @@ function CrqDetail() {
             <div className="space-y-4">
               <PlanDetailsSection plan={plan!} onPreview={() => setPdfOpen(true)} />
               <CrqDetailsSection crq={crq} plan={plan!} />
+              <StageDetailsSection crq={crq} />
               <ValidationSection />
             </div>
           )}
