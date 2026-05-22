@@ -121,7 +121,7 @@ function CrqDetail() {
             </div>
           ) : (
             <div className="space-y-4">
-              <PlanDetailsSection plan={plan!} onPreview={() => setPdfOpen(true)} />
+              <PlanDetailsSectionInner plan={plan!} crqId={crq.id} onPreview={() => setPdfOpen(true)} />
               <CrqDetailsSection crq={crq} plan={plan!} currentStageName={currentStageName} />
               <StageDetailsSection crq={crq} currentStageName={currentStageName} />
               <ValidationSection />
@@ -183,7 +183,7 @@ function Field({ label, value, mono }: { label: string; value: React.ReactNode; 
 
 /* ---------- A. Plan Details ---------- */
 
-function PlanDetailsSection({ plan, onPreview }: { plan: Plan; onPreview: () => void }) {
+function PlanDetailsSectionInner({ plan, onPreview, crqId }: { plan: Plan; onPreview: () => void; crqId?: string }) {
   return (
     <Section
       title="Plan Details"
@@ -205,9 +205,11 @@ function PlanDetailsSection({ plan, onPreview }: { plan: Plan; onPreview: () => 
         <Field label="Assigned Team" value="IP Access — CCB North" />
         <Field label="Total CRQs" value={String(plan.crqs.length)} />
       </div>
-      <div className="text-xs font-semibold text-indigo-600 mb-3">Tasks per CRQ</div>
+      <div className="text-xs font-semibold text-indigo-600 mb-3">
+        {crqId ? `Tasks for ${crqId}` : "Tasks per CRQ"}
+      </div>
       <div className="space-y-4">
-        {plan.crqs.map((c) => {
+        {(crqId ? plan.crqs.filter((c) => c.id === crqId) : plan.crqs).map((c) => {
           const tasks = TASKS_BY_CRQ[c.id] ?? TASKS_BY_CRQ.default;
           return (
             <div key={c.id} className="border border-slate-100 rounded-lg overflow-hidden">
@@ -330,6 +332,22 @@ function buildStages(crq: CRQRecord): StageDef[] {
     { label: "Reason for Cancellation Rejection Deviation", value: "—" },
   ];
   return [
+    {
+      name: "Plan & Inventory Validation",
+      fields: [
+        { label: "Status*", value: "Completed" },
+        ...commonCancel,
+        { label: "Plan ID", value: "—" },
+        { label: "Plan Validated By", value: "Rahul Sharma (B0316607)" },
+        { label: "Plan Validated Time", value: "10-Mar-2026 11:05" },
+        { label: "Inventory Validated By", value: "Amit Verma (B0421987)" },
+        { label: "Inventory Validated Time", value: "10-Mar-2026 12:30" },
+        { label: "Node Reachability", value: "Reachable" },
+        { label: "Spare Card Availability", value: "Confirmed" },
+        { label: "Inventory Source", value: "UIG / NIAM" },
+        { label: "Validation Remark", value: "Plan and inventory verified against latest snapshot." },
+      ],
+    },
     {
       name: "Impact Analysis",
       fields: [
