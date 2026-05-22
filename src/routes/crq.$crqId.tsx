@@ -183,10 +183,6 @@ function Field({ label, value, mono }: { label: string; value: React.ReactNode; 
 
 /* ---------- A. Plan Details ---------- */
 
-function PlanDetailsSection({ plan, onPreview }: { plan: Plan; onPreview: () => void }) {
-  return <PlanDetailsSectionInner plan={plan} onPreview={onPreview} />;
-}
-
 function PlanDetailsSectionInner({ plan, onPreview, crqId }: { plan: Plan; onPreview: () => void; crqId?: string }) {
   return (
     <Section
