@@ -121,7 +121,7 @@ function CrqDetail() {
             </div>
           ) : (
             <div className="space-y-4">
-              <PlanDetailsSection plan={plan!} onPreview={() => setPdfOpen(true)} />
+              <PlanDetailsSectionInner plan={plan!} crqId={crq.id} onPreview={() => setPdfOpen(true)} />
               <CrqDetailsSection crq={crq} plan={plan!} currentStageName={currentStageName} />
               <StageDetailsSection crq={crq} currentStageName={currentStageName} />
               <ValidationSection />
@@ -336,6 +336,22 @@ function buildStages(crq: CRQRecord): StageDef[] {
     { label: "Reason for Cancellation Rejection Deviation", value: "—" },
   ];
   return [
+    {
+      name: "Plan & Inventory Validation",
+      fields: [
+        { label: "Status*", value: "Completed" },
+        ...commonCancel,
+        { label: "Plan ID", value: "—" },
+        { label: "Plan Validated By", value: "Rahul Sharma (B0316607)" },
+        { label: "Plan Validated Time", value: "10-Mar-2026 11:05" },
+        { label: "Inventory Validated By", value: "Amit Verma (B0421987)" },
+        { label: "Inventory Validated Time", value: "10-Mar-2026 12:30" },
+        { label: "Node Reachability", value: "Reachable" },
+        { label: "Spare Card Availability", value: "Confirmed" },
+        { label: "Inventory Source", value: "UIG / NIAM" },
+        { label: "Validation Remark", value: "Plan and inventory verified against latest snapshot." },
+      ],
+    },
     {
       name: "Impact Analysis",
       fields: [
