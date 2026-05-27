@@ -39,7 +39,7 @@ const STAGE_ID_TO_NAME: Record<string, string> = {
   impact: "Impact Analysis",
   mop: "MOP Creation",
   mopv: "MOP Validation",
-  schedule: "Scheduling",
+  schedule: "Scheduling Approval",
   exec: "Network Execution",
   closure: "Task Closure",
 };
