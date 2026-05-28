@@ -327,7 +327,7 @@ const STATUS_ICON: Record<ValidationStatus, { icon: React.ElementType; cls: stri
 
 /* ---------- B2. Stage-wise CRQ Details ---------- */
 
-type StageDef = { name: string; fields: { label: string; value: string }[] };
+type StageDef = { name: string; fields: { label: string; value: React.ReactNode }[] };
 
 function buildStages(crq: CRQRecord): StageDef[] {
   const commonCancel = [
