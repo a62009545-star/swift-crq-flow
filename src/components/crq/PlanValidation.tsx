@@ -78,8 +78,26 @@ function columnsForStage(stage: string | undefined): ColDef[] {
         idCol(stage),
         txt("desc", "Description", ({ plan }) => plan.description),
         txt("mvt", "MOP Validation Time", ({ crq }) => crq.reviewEnd),
-        txt("mvs", "MOP Validation Status", ({ crq }) => (crq.status === "Approved" ? "Validated" : "Pending")),
-        statusCol("CRQ Status"),
+        {
+          key: "mvs",
+          label: "MOP Validation Status",
+          render: ({ crq }) => {
+            const s = mopValidationStatus(crq.status);
+            return (
+              <span className={cn("text-[11px] px-2 py-0.5 rounded-full inline-block", MOPV_STATUS_STYLES[s])}>{s}</span>
+            );
+          },
+        },
+        {
+          key: "crs",
+          label: "CRQ Status",
+          render: ({ crq }) => {
+            const s = mopValidationStatus(crq.status);
+            return (
+              <span className={cn("text-[11px] px-2 py-0.5 rounded-full inline-block", MOPV_STATUS_STYLES[s])}>{s}</span>
+            );
+          },
+        },
       ];
     case "schedule":
       return [
