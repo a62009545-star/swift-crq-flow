@@ -7,6 +7,116 @@ import { PdfModal } from "./PdfModal";
 import { CrqDrawer } from "./CrqDrawer";
 import { Link } from "@tanstack/react-router";
 
+type ColDef = { key: string; label: string; render: (ctx: { plan: Plan; crq: CRQRecord }) => React.ReactNode };
+
+const idCol = (stage?: string): ColDef => ({
+  key: "id",
+  label: "CRQ Number  |  Plan ID",
+  render: ({ plan, crq }) => (
+    <span className="whitespace-nowrap">
+      <Link
+        to="/crq/$crqId"
+        params={{ crqId: crq.id }}
+        search={stage ? { stage } : undefined}
+        className="font-mono text-xs text-indigo-600 font-medium hover:text-indigo-700 hover:underline"
+      >
+        {crq.id}
+      </Link>
+      <span className="font-mono text-xs text-slate-300 mx-1.5">|</span>
+      <span className="font-mono text-xs text-slate-600">{plan.id}</span>
+    </span>
+  ),
+});
+
+const statusCol = (label = "Review Status"): ColDef => ({
+  key: "status",
+  label,
+  render: ({ crq }) => (
+    <span className={cn("text-[11px] px-2 py-0.5 rounded-full inline-block", STATUS_STYLES[crq.status])}>{crq.status}</span>
+  ),
+});
+
+const txt = (key: string, label: string, get: (c: { plan: Plan; crq: CRQRecord }) => React.ReactNode): ColDef => ({
+  key,
+  label,
+  render: (ctx) => <span className="text-xs text-slate-600 whitespace-nowrap">{get(ctx)}</span>,
+});
+
+const mono = (key: string, label: string, get: (c: { plan: Plan; crq: CRQRecord }) => React.ReactNode): ColDef => ({
+  key,
+  label,
+  render: (ctx) => <span className="font-mono text-xs text-slate-600">{get(ctx)}</span>,
+});
+
+function columnsForStage(stage: string | undefined): ColDef[] {
+  switch (stage) {
+    case "impact":
+      return [
+        idCol(stage),
+        txt("loc", "Location Code", ({ crq }) => crq.location ?? "-"),
+        txt("sd", "Start Date", ({ crq }) => crq.reviewStart),
+        txt("ed", "End Date", ({ crq }) => crq.reviewEnd),
+        statusCol("CRQ Status"),
+        txt("iss", "Impact Status", ({ crq }) => crq.impact),
+        txt("istart", "Impact Start", ({ crq }) => crq.reviewStart),
+        txt("iend", "Impact End", ({ crq }) => crq.reviewEnd),
+        mono("olm", "OLM ID Impact Analysis", ({ crq }) => crq.olmid),
+        txt("vendor", "Vendor", ({ crq }) => crq.vendor),
+      ];
+    case "mop":
+      return [
+        idCol(stage),
+        txt("desc", "Description", ({ plan }) => plan.description),
+        txt("mct", "MOP Created Time", ({ crq }) => crq.reviewStart),
+        statusCol("CRQ Status"),
+        txt("mcs", "MOP Creation Status", ({ crq }) => (crq.status === "Approved" ? "Created" : "Pending")),
+        mono("mcb", "MOP Created By", ({ crq }) => crq.olmid),
+        txt("mcm", "MOP Creation Method", () => "Manual"),
+      ];
+    case "mopv":
+      return [
+        idCol(stage),
+        txt("desc", "Description", ({ plan }) => plan.description),
+        txt("mvt", "MOP Validation Time", ({ crq }) => crq.reviewEnd),
+        txt("mvs", "MOP Validation Status", ({ crq }) => (crq.status === "Approved" ? "Validated" : "Pending")),
+        statusCol("CRQ Status"),
+      ];
+    case "schedule":
+      return [
+        idCol(stage),
+        statusCol("Status"),
+        txt("ssd", "Scheduled Start Date", ({ crq }) => crq.reviewStart),
+        txt("sed", "Scheduled End Date", ({ crq }) => crq.reviewEnd),
+        mono("csb", "CRQ Scheduled By", ({ crq }) => crq.olmid),
+        txt("csbt", "CRQ Scheduled By Time", ({ crq }) => crq.reviewStart),
+        mono("aex", "Activity Executed By", ({ crq }) => crq.olmid),
+        txt("bj", "Business Justification", () => "Approved network change"),
+        mono("l3", "L3 Approver OLM ID", ({ crq }) => crq.olmid),
+      ];
+    case "closure":
+      return [
+        idCol(stage),
+        statusCol("Status"),
+        txt("cad", "Change Activity Done", ({ crq }) => (crq.status === "Approved" ? "Yes" : "No")),
+        txt("cd", "Completed Date", ({ crq }) => crq.reviewEnd),
+        mono("ccb", "CRQ Closed By", ({ crq }) => crq.olmid),
+        txt("ccbt", "CRQ Closed By Time", ({ crq }) => crq.reviewEnd),
+      ];
+    case "exec":
+    case "plan":
+    default:
+      return [
+        idCol(stage),
+        statusCol("Review Status"),
+        mono("olm", "OLMID Review", ({ crq }) => crq.olmid),
+        txt("rs", "Review Start", ({ crq }) => crq.reviewStart),
+        txt("re", "Review End", ({ crq }) => crq.reviewEnd),
+        txt("imp", "Remedy Change Impact", ({ crq }) => crq.impact),
+        txt("vendor", "Vendor", ({ crq }) => crq.vendor),
+      ];
+  }
+}
+
 export function PlanValidation({ title = "Plan & Inventory Validation", stage }: { title?: string; stage?: string } = {}) {
   const [taskOpen, setTaskOpen] = useState<Set<string>>(new Set());
   const [valCrq, setValCrq] = useState<CRQRecord | null>(null);
@@ -29,6 +139,9 @@ export function PlanValidation({ title = "Plan & Inventory Validation", stage }:
     const q = search.toLowerCase();
     return plan.id.toLowerCase().includes(q) || crq.id.toLowerCase().includes(q);
   });
+
+  const cols = columnsForStage(stage);
+  const colSpan = cols.length + 3; // +3: expander, checkbox, actions
 
   return (
     <div className="px-6 py-5">
@@ -55,25 +168,22 @@ export function PlanValidation({ title = "Plan & Inventory Validation", stage }:
               <tr className="text-[11px] uppercase tracking-wide text-slate-500 bg-slate-50/60">
                 <th className="text-left font-medium py-2.5 pl-4 pr-3 w-8"></th>
                 <th className="text-left font-medium py-2.5 pr-3 w-8"></th>
-                <th className="text-left font-medium py-2.5 pr-3">CRQ Number &nbsp;|&nbsp; Plan ID</th>
-                <th className="text-left font-medium py-2.5 pr-3">Review Status</th>
-                <th className="text-left font-medium py-2.5 pr-3">OLMID Review</th>
-                <th className="text-left font-medium py-2.5 pr-3">Review Start</th>
-                <th className="text-left font-medium py-2.5 pr-3">Review End</th>
-                <th className="text-left font-medium py-2.5 pr-3">Remedy Change Impact</th>
-                <th className="text-left font-medium py-2.5 pr-3">Vendor</th>
+                {cols.map((c) => (
+                  <th key={c.key} className="text-left font-medium py-2.5 pr-3 whitespace-nowrap">{c.label}</th>
+                ))}
                 <th className="text-left font-medium py-2.5 pr-4">Actions</th>
               </tr>
             </thead>
             <tbody>
               {rows.length === 0 ? (
-                <tr><td colSpan={10} className="text-center py-8 text-xs text-slate-400">No matching records.</td></tr>
+                <tr><td colSpan={colSpan} className="text-center py-8 text-xs text-slate-400">No matching records.</td></tr>
               ) : rows.map(({ plan, crq }) => (
                 <CrqFlatRow
                   key={crq.id}
                   plan={plan}
                   crq={crq}
-                  stage={stage}
+                  cols={cols}
+                  colSpan={colSpan}
                   open={taskOpen.has(crq.id)}
                   onToggle={() => toggleTask(crq.id)}
                   onEye={() => setValCrq(crq)}
@@ -96,7 +206,8 @@ export function PlanValidation({ title = "Plan & Inventory Validation", stage }:
 function CrqFlatRow({
   plan,
   crq,
-  stage,
+  cols,
+  colSpan,
   open,
   onToggle,
   onEye,
@@ -105,7 +216,8 @@ function CrqFlatRow({
 }: {
   plan: Plan;
   crq: CRQRecord;
-  stage?: string;
+  cols: ColDef[];
+  colSpan: number;
   open: boolean;
   onToggle: () => void;
   onEye: () => void;
@@ -122,26 +234,9 @@ function CrqFlatRow({
           </button>
         </td>
         <td className="py-2.5 pr-3"><input type="checkbox" className="rounded border-slate-300" /></td>
-        <td className="py-2.5 pr-3 whitespace-nowrap">
-          <Link
-            to="/crq/$crqId"
-            params={{ crqId: crq.id }}
-            search={stage ? { stage } : undefined}
-            className="font-mono text-xs text-indigo-600 font-medium hover:text-indigo-700 hover:underline"
-          >
-            {crq.id}
-          </Link>
-          <span className="font-mono text-xs text-slate-300 mx-1.5">|</span>
-          <span className="font-mono text-xs text-slate-600">{plan.id}</span>
-        </td>
-        <td className="py-2.5 pr-3">
-          <span className={cn("text-[11px] px-2 py-0.5 rounded-full inline-block", STATUS_STYLES[crq.status])}>{crq.status}</span>
-        </td>
-        <td className="py-2.5 pr-3 font-mono text-xs text-slate-600">{crq.olmid}</td>
-        <td className="py-2.5 pr-3 text-xs text-slate-600 whitespace-nowrap">{crq.reviewStart}</td>
-        <td className="py-2.5 pr-3 text-xs text-slate-600 whitespace-nowrap">{crq.reviewEnd}</td>
-        <td className="py-2.5 pr-3 text-xs text-slate-600">{crq.impact}</td>
-        <td className="py-2.5 pr-3 text-xs text-slate-600">{crq.vendor}</td>
+        {cols.map((c) => (
+          <td key={c.key} className="py-2.5 pr-3">{c.render({ plan, crq })}</td>
+        ))}
         <td className="py-2.5 pr-4">
           <div className="flex items-center gap-1">
             <ActionBtn title="View Validation" onClick={onEye}><Eye className="h-3.5 w-3.5" /></ActionBtn>
@@ -152,7 +247,7 @@ function CrqFlatRow({
       </tr>
       {open && tasks.map((t) => (
         <tr key={t.id} className="bg-indigo-50/30">
-          <td colSpan={10} className="px-4 py-3">
+          <td colSpan={colSpan} className="px-4 py-3">
             <div className="text-xs font-semibold text-indigo-600 mb-2">Tasks Associated with CRQ <span className="ml-1 px-1.5 py-0.5 rounded-full bg-indigo-100 text-indigo-700">{tasks.length}</span></div>
             <div className="grid grid-cols-6 gap-3 text-xs">
               <div><div className="text-[10px] uppercase text-slate-400">Task ID</div><div className="font-mono text-slate-700 break-all">{t.id}</div></div>
