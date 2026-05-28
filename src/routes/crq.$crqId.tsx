@@ -389,7 +389,7 @@ function buildStages(crq: CRQRecord): StageDef[] {
         { label: "MOP Validation Remarks", value: "Rollback steps verified; pre/post checks aligned." },
         { label: "Validator Name", value: "Priya Nair (B0612345)" },
         { label: "Validation Time", value: "12-Mar-2026 18:40" },
-        { label: "Status*", value: crq.status },
+        { label: "Status*", value: <span className={cn("text-[11px] px-2 py-0.5 rounded-full inline-block", MOPV_STATUS_STYLES[mopValidationStatus(crq.status)])}>{mopValidationStatus(crq.status)}</span> },
         { label: "Reason for Cancellation Rejection", value: "—" },
         { label: "Cancellation Rejection Rollback Owner", value: "—" },
         { label: "Reason for Cancellation Rejection Deviation", value: "—" },
