@@ -451,6 +451,7 @@ function buildStages(crq: CRQRecord): StageDef[] {
     {
       name: "Task Closure",
       fields: [
+        { label: "Status", value: <span className={cn("text-[11px] px-2 py-0.5 rounded-full inline-block", CLOSURE_STATUS_STYLES[taskClosureStatus(crq.status)])}>{taskClosureStatus(crq.status)}</span> },
         { label: "Reason for Cancellation Rejection", value: "—" },
         { label: "Change Activity Done", value: "Yes" },
         { label: "Change Activity Done Time", value: "16-Mar-2026 23:30" },
