@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { PLANS, Plan, CRQRecord, STATUS_STYLES, TASKS_BY_CRQ } from "./data";
+import { PLANS, Plan, CRQRecord, STATUS_STYLES, TASKS_BY_CRQ, mopValidationStatus, taskClosureStatus, MOPV_STATUS_STYLES, CLOSURE_STATUS_STYLES } from "./data";
 import { ChevronRight, Eye, ExternalLink, FileText, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ValidationModal } from "./ValidationModal";
@@ -78,8 +78,26 @@ function columnsForStage(stage: string | undefined): ColDef[] {
         idCol(stage),
         txt("desc", "Description", ({ plan }) => plan.description),
         txt("mvt", "MOP Validation Time", ({ crq }) => crq.reviewEnd),
-        txt("mvs", "MOP Validation Status", ({ crq }) => (crq.status === "Approved" ? "Validated" : "Pending")),
-        statusCol("CRQ Status"),
+        {
+          key: "mvs",
+          label: "MOP Validation Status",
+          render: ({ crq }) => {
+            const s = mopValidationStatus(crq.status);
+            return (
+              <span className={cn("text-[11px] px-2 py-0.5 rounded-full inline-block", MOPV_STATUS_STYLES[s])}>{s}</span>
+            );
+          },
+        },
+        {
+          key: "crs",
+          label: "CRQ Status",
+          render: ({ crq }) => {
+            const s = mopValidationStatus(crq.status);
+            return (
+              <span className={cn("text-[11px] px-2 py-0.5 rounded-full inline-block", MOPV_STATUS_STYLES[s])}>{s}</span>
+            );
+          },
+        },
       ];
     case "schedule":
       return [
@@ -96,7 +114,16 @@ function columnsForStage(stage: string | undefined): ColDef[] {
     case "closure":
       return [
         idCol(stage),
-        statusCol("Status"),
+        {
+          key: "st",
+          label: "Status",
+          render: ({ crq }) => {
+            const s = taskClosureStatus(crq.status);
+            return (
+              <span className={cn("text-[11px] px-2 py-0.5 rounded-full inline-block", CLOSURE_STATUS_STYLES[s])}>{s}</span>
+            );
+          },
+        },
         txt("cad", "Change Activity Done", ({ crq }) => (crq.status === "Approved" ? "Yes" : "No")),
         txt("cd", "Completed Date", ({ crq }) => crq.reviewEnd),
         mono("ccb", "CRQ Closed By", ({ crq }) => crq.olmid),

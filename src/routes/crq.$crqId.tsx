@@ -6,6 +6,10 @@ import {
   WORKFLOW_BY_CRQ,
   DEFAULT_WORKFLOW,
   STATUS_STYLES,
+  mopValidationStatus,
+  taskClosureStatus,
+  MOPV_STATUS_STYLES,
+  CLOSURE_STATUS_STYLES,
   type CRQRecord,
   type Plan,
   type Task,
@@ -323,7 +327,7 @@ const STATUS_ICON: Record<ValidationStatus, { icon: React.ElementType; cls: stri
 
 /* ---------- B2. Stage-wise CRQ Details ---------- */
 
-type StageDef = { name: string; fields: { label: string; value: string }[] };
+type StageDef = { name: string; fields: { label: string; value: React.ReactNode }[] };
 
 function buildStages(crq: CRQRecord): StageDef[] {
   const commonCancel = [
@@ -385,7 +389,7 @@ function buildStages(crq: CRQRecord): StageDef[] {
         { label: "MOP Validation Remarks", value: "Rollback steps verified; pre/post checks aligned." },
         { label: "Validator Name", value: "Priya Nair (B0612345)" },
         { label: "Validation Time", value: "12-Mar-2026 18:40" },
-        { label: "Status*", value: crq.status },
+        { label: "Status*", value: <span className={cn("text-[11px] px-2 py-0.5 rounded-full inline-block", MOPV_STATUS_STYLES[mopValidationStatus(crq.status)])}>{mopValidationStatus(crq.status)}</span> },
         { label: "Reason for Cancellation Rejection", value: "—" },
         { label: "Cancellation Rejection Rollback Owner", value: "—" },
         { label: "Reason for Cancellation Rejection Deviation", value: "—" },
@@ -447,6 +451,7 @@ function buildStages(crq: CRQRecord): StageDef[] {
     {
       name: "Task Closure",
       fields: [
+        { label: "Status", value: <span className={cn("text-[11px] px-2 py-0.5 rounded-full inline-block", CLOSURE_STATUS_STYLES[taskClosureStatus(crq.status)])}>{taskClosureStatus(crq.status)}</span> },
         { label: "Reason for Cancellation Rejection", value: "—" },
         { label: "Change Activity Done", value: "Yes" },
         { label: "Change Activity Done Time", value: "16-Mar-2026 23:30" },
