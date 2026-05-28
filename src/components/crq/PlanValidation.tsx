@@ -114,7 +114,16 @@ function columnsForStage(stage: string | undefined): ColDef[] {
     case "closure":
       return [
         idCol(stage),
-        statusCol("Status"),
+        {
+          key: "st",
+          label: "Status",
+          render: ({ crq }) => {
+            const s = taskClosureStatus(crq.status);
+            return (
+              <span className={cn("text-[11px] px-2 py-0.5 rounded-full inline-block", CLOSURE_STATUS_STYLES[s])}>{s}</span>
+            );
+          },
+        },
         txt("cad", "Change Activity Done", ({ crq }) => (crq.status === "Approved" ? "Yes" : "No")),
         txt("cd", "Completed Date", ({ crq }) => crq.reviewEnd),
         mono("ccb", "CRQ Closed By", ({ crq }) => crq.olmid),
