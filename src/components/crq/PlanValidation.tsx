@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { PLANS, Plan, CRQRecord, STATUS_STYLES, TASKS_BY_CRQ } from "./data";
+import { PLANS, Plan, CRQRecord, STATUS_STYLES, TASKS_BY_CRQ, mopValidationStatus, taskClosureStatus, MOPV_STATUS_STYLES, CLOSURE_STATUS_STYLES } from "./data";
 import { ChevronRight, Eye, ExternalLink, FileText, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ValidationModal } from "./ValidationModal";
