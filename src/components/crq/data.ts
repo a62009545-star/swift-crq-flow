@@ -217,3 +217,46 @@ export const STATUS_STYLES: Record<ReviewStatus, string> = {
   "In Review": "bg-blue-50 text-blue-700 border border-blue-200",
   "Non Service Affecting": "bg-slate-100 text-slate-600 border border-slate-200",
 };
+
+export function mopValidationStatus(status: ReviewStatus): string {
+  switch (status) {
+    case "Approved":
+      return "completed";
+    case "In Review":
+      return "in progress";
+    case "Pause":
+      return "pending";
+    case "Canceled":
+      return "failed";
+    case "Non Service Affecting":
+      return "completed";
+  }
+}
+
+export function taskClosureStatus(status: ReviewStatus): string {
+  switch (status) {
+    case "Approved":
+      return "completed";
+    case "In Review":
+      return "in progress";
+    case "Pause":
+      return "pending";
+    case "Canceled":
+      return "pending";
+    case "Non Service Affecting":
+      return "completed";
+  }
+}
+
+export const MOPV_STATUS_STYLES: Record<string, string> = {
+  completed: "bg-green-50 text-green-700 border border-green-200",
+  pending: "bg-amber-50 text-amber-700 border border-amber-200",
+  "in progress": "bg-blue-50 text-blue-700 border border-blue-200",
+  failed: "bg-red-50 text-red-700 border border-red-200",
+};
+
+export const CLOSURE_STATUS_STYLES: Record<string, string> = {
+  completed: "bg-green-50 text-green-700 border border-green-200",
+  pending: "bg-amber-50 text-amber-700 border border-amber-200",
+  "in progress": "bg-blue-50 text-blue-700 border border-blue-200",
+};
