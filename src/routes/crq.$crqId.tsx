@@ -10,6 +10,7 @@ import {
   taskClosureStatus,
   MOPV_STATUS_STYLES,
   CLOSURE_STATUS_STYLES,
+  TASK_STATUS_STYLES,
   type CRQRecord,
   type Plan,
   type Task,
@@ -17,6 +18,7 @@ import {
 import { Sidebar } from "@/components/crq/Sidebar";
 import { Header } from "@/components/crq/Header";
 import { PdfModal } from "@/components/crq/PdfModal";
+import { MopUploadPanel } from "@/components/crq/MopUploadModal";
 import {
   ChevronDown,
   ChevronRight,
@@ -128,7 +130,7 @@ function CrqDetail() {
               <PlanDetailsSectionInner plan={plan!} crqId={crq.id} onPreview={() => setPdfOpen(true)} />
               <CrqDetailsSection crq={crq} plan={plan!} currentStageName={currentStageName} />
               <StageDetailsSection crq={crq} currentStageName={currentStageName} />
-              <ValidationSection />
+              <ValidationSection crq={crq} stage={stage} />
             </div>
           )}
         </div>
@@ -253,6 +255,12 @@ function TaskDetailCard({ task }: { task: Task }) {
       </div>
       <Field label="Location Code" value={task.locationCode} />
       <Field label="Task Activity" value={task.taskActivity} />
+      <Field
+        label="Task Status"
+        value={
+          <span className={cn("text-[11px] px-2 py-0.5 rounded-full inline-block", TASK_STATUS_STYLES[task.status])}>{task.status}</span>
+        }
+      />
     </div>
   );
 }
@@ -506,7 +514,14 @@ function StageDetailsSection({ crq, currentStageName }: { crq: CRQRecord; curren
   );
 }
 
-function ValidationSection() {
+function ValidationSection({ crq, stage }: { crq: CRQRecord; stage?: string }) {
+  if (stage === "mop") {
+    return (
+      <div className="bg-white rounded-xl border border-slate-100 shadow-sm overflow-hidden">
+        <MopUploadPanel crqId={crq.id} />
+      </div>
+    );
+  }
   return (
     <Section title="Validation" subtitle="Checkpoint-wise validation status">
       <ValidationPanel />

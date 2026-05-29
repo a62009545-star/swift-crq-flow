@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { PLANS, Plan, CRQRecord, STATUS_STYLES, TASKS_BY_CRQ, mopValidationStatus, taskClosureStatus, MOPV_STATUS_STYLES, CLOSURE_STATUS_STYLES } from "./data";
+import { PLANS, Plan, CRQRecord, STATUS_STYLES, TASKS_BY_CRQ, mopValidationStatus, taskClosureStatus, MOPV_STATUS_STYLES, CLOSURE_STATUS_STYLES, TASK_STATUS_STYLES } from "./data";
 import { ChevronRight, Eye, ExternalLink, FileText, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ValidationModal } from "./ValidationModal";
+import { MopUploadModal } from "./MopUploadModal";
 import { PdfModal } from "./PdfModal";
 import { CrqDrawer } from "./CrqDrawer";
 import { Link } from "@tanstack/react-router";
@@ -147,6 +148,7 @@ function columnsForStage(stage: string | undefined): ColDef[] {
 export function PlanValidation({ title = "Plan & Inventory Validation", stage }: { title?: string; stage?: string } = {}) {
   const [taskOpen, setTaskOpen] = useState<Set<string>>(new Set());
   const [valCrq, setValCrq] = useState<CRQRecord | null>(null);
+  const [mopCrq, setMopCrq] = useState<CRQRecord | null>(null);
   const [pdfOpen, setPdfOpen] = useState(false);
   const [drawerCrq, setDrawerCrq] = useState<CRQRecord | null>(null);
   const [search, setSearch] = useState("");
@@ -213,7 +215,7 @@ export function PlanValidation({ title = "Plan & Inventory Validation", stage }:
                   colSpan={colSpan}
                   open={taskOpen.has(crq.id)}
                   onToggle={() => toggleTask(crq.id)}
-                  onEye={() => setValCrq(crq)}
+                  onEye={() => (stage === "mop" ? setMopCrq(crq) : setValCrq(crq))}
                   onPdf={() => setPdfOpen(true)}
                   onDrawer={() => setDrawerCrq(crq)}
                 />
@@ -224,6 +226,7 @@ export function PlanValidation({ title = "Plan & Inventory Validation", stage }:
       </div>
 
       <ValidationModal crq={valCrq} onClose={() => setValCrq(null)} />
+      <MopUploadModal crq={mopCrq} onClose={() => setMopCrq(null)} />
       <PdfModal open={pdfOpen} onClose={() => setPdfOpen(false)} />
       <CrqDrawer crq={drawerCrq} onClose={() => setDrawerCrq(null)} />
     </div>
@@ -276,7 +279,7 @@ function CrqFlatRow({
         <tr key={t.id} className="bg-indigo-50/30">
           <td colSpan={colSpan} className="px-4 py-3">
             <div className="text-xs font-semibold text-indigo-600 mb-2">Tasks Associated with CRQ <span className="ml-1 px-1.5 py-0.5 rounded-full bg-indigo-100 text-indigo-700">{tasks.length}</span></div>
-            <div className="grid grid-cols-6 gap-3 text-xs">
+            <div className="grid grid-cols-7 gap-3 text-xs">
               <div><div className="text-[10px] uppercase text-slate-400">Task ID</div><div className="font-mono text-slate-700 break-all">{t.id}</div></div>
               <div><div className="text-[10px] uppercase text-slate-400">NE Label</div><div className="font-mono text-slate-700 break-all">{t.neLabel}</div></div>
               <div><div className="text-[10px] uppercase text-slate-400">Plan Activity Details</div><div className="text-slate-700">{t.planActivity}</div></div>
@@ -290,6 +293,10 @@ function CrqFlatRow({
               </div>
               <div><div className="text-[10px] uppercase text-slate-400">Location Code</div><div className="text-slate-700">{t.locationCode}</div></div>
               <div><div className="text-[10px] uppercase text-slate-400">Task Activity</div><div className="text-slate-700">{t.taskActivity}</div></div>
+              <div>
+                <div className="text-[10px] uppercase text-slate-400 mb-1">Task Status</div>
+                <span className={cn("text-[10px] px-2 py-0.5 rounded-full inline-block", TASK_STATUS_STYLES[t.status])}>{t.status}</span>
+              </div>
             </div>
           </td>
         </tr>

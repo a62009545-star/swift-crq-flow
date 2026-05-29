@@ -115,6 +115,17 @@ export type Task = {
   profileTypes: string[];
   locationCode: string;
   taskActivity: string;
+  status: TaskStatus;
+};
+
+export type TaskStatus = "Open" | "In Progress" | "Completed" | "Pending" | "Failed";
+
+export const TASK_STATUS_STYLES: Record<TaskStatus, string> = {
+  Open: "bg-sky-50 text-sky-700 border border-sky-200",
+  "In Progress": "bg-blue-50 text-blue-700 border border-blue-200",
+  Completed: "bg-green-50 text-green-700 border border-green-200",
+  Pending: "bg-amber-50 text-amber-700 border border-amber-200",
+  Failed: "bg-red-50 text-red-700 border border-red-200",
 };
 
 const DEFAULT_TASKS: Task[] = [
@@ -125,6 +136,7 @@ const DEFAULT_TASKS: Task[] = [
     profileTypes: ["OPERATIONS", "IMPLEMENTATION"],
     locationCode: "GURGAON-GRG",
     taskActivity: "ip_new_equipment_activity",
+    status: "Open",
   },
   {
     id: "CEN/AC/CRD-A/MOB/16032026/001_TASK_003",
@@ -133,6 +145,7 @@ const DEFAULT_TASKS: Task[] = [
     profileTypes: ["PLANNING", "IMPLEMENTATION"],
     locationCode: "MUMBAI-BOM",
     taskActivity: "ip_card_addition_activity",
+    status: "In Progress",
   },
 ];
 
@@ -146,6 +159,7 @@ export const TASKS_BY_CRQ: Record<string, Task[]> = {
       profileTypes: ["OPERATIONS"],
       locationCode: "GURGAON-GRG",
       taskActivity: "ip_new_equipment_activity",
+      status: "Open",
     },
   ],
   CRQ000005983527: [
@@ -156,6 +170,7 @@ export const TASKS_BY_CRQ: Record<string, Task[]> = {
       profileTypes: ["IMPLEMENTATION", "QA"],
       locationCode: "MUMBAI-BOM",
       taskActivity: "ip_card_swap_activity",
+      status: "Completed",
     },
     {
       id: "CRQ000005983527_TASK_002",
@@ -164,6 +179,7 @@ export const TASKS_BY_CRQ: Record<string, Task[]> = {
       profileTypes: ["VALIDATION"],
       locationCode: "MUMBAI-BOM",
       taskActivity: "ip_validation_activity",
+      status: "Pending",
     },
   ],
   CRQ000005983601: [
@@ -174,6 +190,7 @@ export const TASKS_BY_CRQ: Record<string, Task[]> = {
       profileTypes: ["PLANNING", "IMPLEMENTATION"],
       locationCode: "PUNE-PNQ",
       taskActivity: "ip_b2b_provisioning_activity",
+      status: "In Progress",
     },
   ],
 };
