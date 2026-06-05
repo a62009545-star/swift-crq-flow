@@ -272,16 +272,18 @@ function PlanDetailsSectionInner({ plan, onPreview, crqId }: { plan: Plan; onPre
     <Section
       title="Plan Details"
       subtitle="Plan attributes, execution window, team & tasks"
+      icon={ClipboardList}
+      accent="indigo"
       right={
         <button
           onClick={onPreview}
-          className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md border border-slate-200 bg-white hover:bg-slate-50 text-xs text-slate-700"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-indigo-200 bg-indigo-50/50 hover:bg-indigo-100 text-xs font-medium text-indigo-700 transition"
         >
           <FileText className="h-3.5 w-3.5" /> Preview Plan PDF
         </button>
       }
     >
-      <div className="grid grid-cols-2 lg:grid-cols-3 gap-5 mb-6">
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 mb-6">
         <Field label="Plan ID" value={plan.id} mono />
         <Field label="Plan Name" value={plan.description || "Plan"} />
         <Field label="Planned Activity" value={plan.type} />
@@ -289,20 +291,25 @@ function PlanDetailsSectionInner({ plan, onPreview, crqId }: { plan: Plan; onPre
         <Field label="Assigned Team" value="IP Access — CCB North" />
         <Field label="Total CRQs" value={String(plan.crqs.length)} />
       </div>
-      <div className="text-xs font-semibold text-indigo-600 mb-3">
-        {crqId ? `Tasks for ${crqId}` : "Tasks per CRQ"}
+      <div className="flex items-center gap-2 mb-3">
+        <div className="h-6 w-1 rounded-full bg-gradient-to-b from-indigo-500 to-purple-500" />
+        <span className="text-xs font-bold text-slate-800 uppercase tracking-wider">
+          {crqId ? `Tasks for ${crqId}` : "Tasks per CRQ"}
+        </span>
+        <div className="h-px flex-1 bg-gradient-to-r from-slate-200 to-transparent" />
       </div>
       <div className="space-y-4">
         {(crqId ? plan.crqs.filter((c) => c.id === crqId) : plan.crqs).map((c) => {
           const tasks = TASKS_BY_CRQ[c.id] ?? TASKS_BY_CRQ.default;
           return (
-            <div key={c.id} className="border border-slate-100 rounded-lg overflow-hidden">
-              <div className="flex items-center justify-between px-4 py-2 bg-slate-50/70 border-b border-slate-100">
+            <div key={c.id} className="border border-slate-200/70 rounded-xl overflow-hidden bg-white shadow-sm">
+              <div className="flex items-center justify-between px-4 py-2.5 bg-gradient-to-r from-indigo-50 via-purple-50/40 to-transparent border-b border-slate-100">
                 <div className="flex items-center gap-2">
-                  <span className="text-[10px] uppercase tracking-wide text-slate-400">CRQ</span>
-                  <span className="font-mono text-xs text-slate-800">{c.id}</span>
+                  <GitBranch className="h-3.5 w-3.5 text-indigo-500" />
+                  <span className="text-[10px] uppercase tracking-wider text-slate-500 font-semibold">CRQ</span>
+                  <span className="font-mono text-xs text-slate-900 font-bold">{c.id}</span>
                 </div>
-                <span className="text-[11px] text-slate-500">{tasks.length} task{tasks.length === 1 ? "" : "s"}</span>
+                <span className="text-[11px] text-indigo-700 font-semibold px-2 py-0.5 rounded-full bg-indigo-100/70">{tasks.length} task{tasks.length === 1 ? "" : "s"}</span>
               </div>
               <div className="divide-y divide-slate-100">
                 {tasks.map((t) => (
@@ -318,16 +325,24 @@ function PlanDetailsSectionInner({ plan, onPreview, crqId }: { plan: Plan; onPre
 }
 
 function TaskDetailCard({ task }: { task: Task }) {
+  const statusAccent: Record<string, string> = {
+    Open: "from-sky-400 to-sky-500",
+    "In Progress": "from-amber-400 to-orange-500",
+    Completed: "from-emerald-400 to-emerald-600",
+    Pending: "from-slate-300 to-slate-400",
+    Failed: "from-red-400 to-red-600",
+  };
   return (
-    <div className="p-4 grid grid-cols-2 md:grid-cols-3 gap-4 bg-white">
+    <div className="relative p-4 pl-5 grid grid-cols-2 md:grid-cols-3 gap-4 bg-white hover:bg-slate-50/50 transition-colors">
+      <div className={cn("absolute left-0 top-3 bottom-3 w-1 rounded-r-full bg-gradient-to-b", statusAccent[task.status] ?? "from-slate-300 to-slate-400")} />
       <Field label="Task ID" value={task.id} mono />
       <Field label="NE Label" value={task.neLabel} mono />
       <Field label="Plan Activity Details" value={task.planActivity} />
       <div>
-        <div className="text-[10px] uppercase tracking-wide text-slate-400 mb-1">Task Profile Type</div>
-        <div className="flex flex-wrap gap-1">
+        <div className="text-[10px] uppercase tracking-wider text-slate-400 font-semibold mb-1.5">Task Profile Type</div>
+        <div className="flex flex-wrap gap-1.5">
           {task.profileTypes.map((p) => (
-            <span key={p} className="text-[10px] px-1.5 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-100">{p}</span>
+            <span key={p} className="text-[10px] px-2 py-0.5 rounded-full bg-gradient-to-r from-indigo-50 to-purple-50 text-indigo-700 border border-indigo-200/70 font-semibold">{p}</span>
           ))}
         </div>
       </div>
@@ -336,7 +351,10 @@ function TaskDetailCard({ task }: { task: Task }) {
       <Field
         label="Task Status"
         value={
-          <span className={cn("text-[11px] px-2 py-0.5 rounded-full inline-block", TASK_STATUS_STYLES[task.status])}>{task.status}</span>
+          <span className={cn("text-[11px] px-2.5 py-1 rounded-full inline-flex items-center gap-1.5 font-semibold border", TASK_STATUS_STYLES[task.status])}>
+            <span className="h-1.5 w-1.5 rounded-full bg-current opacity-70" />
+            {task.status}
+          </span>
         }
       />
     </div>
@@ -352,8 +370,8 @@ function CrqDetailsSection({ crq, plan, currentStageName }: { crq: CRQRecord; pl
     ? buildStages(crq).find((s) => s.name === currentStageName)?.fields ?? []
     : [];
   return (
-    <Section title="CRQ Details" subtitle="Full change request attributes">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5">
+    <Section title="CRQ Details" subtitle="Full change request attributes" icon={ShieldCheck} accent="purple">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-1">
         <Field label="CRQ Number" value={crq.id} mono />
         <Field label="Plan Reference" value={plan.id} mono />
         <Field label="Change Type" value={plan.type} />
