@@ -258,9 +258,10 @@ function Section({
 
 function Field({ label, value, mono }: { label: string; value: React.ReactNode; mono?: boolean }) {
   return (
-    <div className="group relative rounded-lg p-3 -m-1 hover:bg-gradient-to-br hover:from-indigo-50/40 hover:to-purple-50/20 transition-colors">
-      <div className="text-[10px] uppercase tracking-wider text-slate-400 font-semibold mb-1 group-hover:text-indigo-500 transition-colors">{label}</div>
-      <div className={cn("text-sm text-slate-800 font-medium leading-relaxed", mono && "font-mono text-xs text-slate-700")}>{value}</div>
+    <div className="group relative rounded-xl border border-slate-200/70 bg-gradient-to-br from-white to-slate-50/60 px-3.5 py-2.5 hover:border-indigo-300 hover:shadow-sm hover:from-indigo-50/40 hover:to-white transition-all">
+      <div className="absolute left-0 top-2.5 bottom-2.5 w-[2px] rounded-r-full bg-gradient-to-b from-indigo-400 to-purple-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+      <div className="text-[9px] uppercase tracking-[0.12em] text-slate-500 font-bold mb-1 group-hover:text-indigo-600 transition-colors">{label}</div>
+      <div className={cn("text-sm text-slate-900 font-semibold leading-snug break-words", mono && "font-mono text-[12px] text-slate-800 tracking-tight")}>{value}</div>
     </div>
   );
 }
@@ -366,12 +367,9 @@ function TaskDetailCard({ task }: { task: Task }) {
 function CrqDetailsSection({ crq, plan, currentStageName }: { crq: CRQRecord; plan: Plan; currentStageName?: string }) {
   const wf = WORKFLOW_BY_CRQ[crq.id] ?? DEFAULT_WORKFLOW;
   const currentStage = wf.find((w) => w.empId)?.stage ?? "Not started";
-  const stageFields = currentStageName
-    ? buildStages(crq).find((s) => s.name === currentStageName)?.fields ?? []
-    : [];
   return (
     <Section title="CRQ Details" subtitle="Full change request attributes" icon={ShieldCheck} accent="purple">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-1">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
         <Field label="CRQ Number" value={crq.id} mono />
         <Field label="Plan Reference" value={plan.id} mono />
         <Field label="Change Type" value={plan.type} />
@@ -404,20 +402,6 @@ function CrqDetailsSection({ crq, plan, currentStageName }: { crq: CRQRecord; pl
           <Field label="Remarks / Comments" value="Card addition validated against latest MOP. Rollback documented. Field team briefed for the execution window." />
         </div>
       </div>
-      {stageFields.length > 0 && (
-        <>
-          <div className="mt-6 mb-3 flex items-center gap-2">
-            <div className="h-6 w-1 rounded-full bg-gradient-to-b from-purple-500 to-indigo-500" />
-            <span className="text-xs uppercase tracking-wider font-bold text-slate-800">{currentStageName} — Stage Details</span>
-            <div className="h-px flex-1 bg-gradient-to-r from-slate-200 to-transparent" />
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-1">
-            {stageFields.map((f) => (
-              <Field key={f.label} label={f.label} value={f.value} mono={f.label.toLowerCase().includes("time") || f.label.toLowerCase().includes("date")} />
-            ))}
-          </div>
-        </>
-      )}
     </Section>
   );
 }
