@@ -33,6 +33,18 @@ import {
   Activity,
   Network,
 } from "lucide-react";
+import {
+  Hash,
+  Calendar,
+  Users,
+  Layers,
+  MapPin,
+  Tag,
+  Sparkles,
+  ClipboardList,
+  ShieldCheck,
+  GitBranch,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/crq/$crqId")({
@@ -95,38 +107,19 @@ function CrqDetail() {
   const currentStageName = stage ? STAGE_ID_TO_NAME[stage] : undefined;
 
   return (
-    <div className="min-h-screen bg-slate-50/60">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50/40">
       <Sidebar active="workflow" onChange={() => {}} />
       <Header crumb={["CRQ Workflow", "CRQ Detail", crqId]} />
       <div className="ml-[220px] pt-14">
         <div className="px-6 py-5 max-w-[1400px]">
-          <div className="flex items-center justify-between mb-5">
-            <div className="flex items-center gap-3">
-              <Link to="/" className="p-1.5 rounded-md border border-slate-200 bg-white hover:bg-slate-100 text-slate-600">
-                <ArrowLeft className="h-4 w-4" />
-              </Link>
-              <div>
-                <div className="text-[11px] uppercase tracking-wide text-slate-400">CRQ Number</div>
-                <h1 className="font-mono text-base font-semibold text-slate-900">{crqId}</h1>
-              </div>
-              {crq && (
-                <span className={cn("text-[11px] px-2 py-0.5 rounded-full ml-2", STATUS_STYLES[crq.status])}>{crq.status}</span>
-              )}
-            </div>
-            <button
-              onClick={() => setPdfOpen(true)}
-              className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-indigo-600 text-white text-xs font-medium hover:bg-indigo-700 shadow-sm transition"
-            >
-              <FileText className="h-3.5 w-3.5" /> Preview Plan PDF
-            </button>
-          </div>
+          {crq && plan && <HeroHeader crq={crq} plan={plan} onPreview={() => setPdfOpen(true)} />}
 
           {!crq ? (
             <div className="bg-white rounded-xl border border-slate-100 p-8 text-center text-sm text-slate-500">
               CRQ <span className="font-mono">{crqId}</span> not found.
             </div>
           ) : (
-            <div className="space-y-4">
+            <div className="space-y-5 mt-5">
               <PlanDetailsSectionInner plan={plan!} crqId={crq.id} onPreview={() => setPdfOpen(true)} />
               <CrqDetailsSection crq={crq} plan={plan!} currentStageName={currentStageName} />
               <StageDetailsSection crq={crq} currentStageName={currentStageName} />
@@ -140,6 +133,74 @@ function CrqDetail() {
   );
 }
 
+/* ---------- Hero Header ---------- */
+
+function HeroHeader({ crq, plan, onPreview }: { crq: CRQRecord; plan: Plan; onPreview: () => void }) {
+  const stats: { icon: React.ElementType; label: string; value: string; tone: string }[] = [
+    { icon: Hash, label: "Plan ID", value: plan.id, tone: "from-indigo-500/10 to-indigo-500/0 text-indigo-700 ring-indigo-200/60" },
+    { icon: Calendar, label: "Execution Window", value: `${crq.reviewStart} → ${crq.reviewEnd}`, tone: "from-purple-500/10 to-purple-500/0 text-purple-700 ring-purple-200/60" },
+    { icon: Users, label: "Assigned Team", value: "IP Access — CCB North", tone: "from-emerald-500/10 to-emerald-500/0 text-emerald-700 ring-emerald-200/60" },
+    { icon: Layers, label: "Total CRQs", value: String(plan.crqs.length), tone: "from-amber-500/10 to-amber-500/0 text-amber-700 ring-amber-200/60" },
+  ];
+  return (
+    <div className="relative overflow-hidden rounded-2xl border border-indigo-100/60 shadow-sm bg-gradient-to-br from-indigo-600 via-indigo-700 to-purple-700 text-white">
+      <div className="absolute inset-0 opacity-[0.15]" style={{ backgroundImage: "radial-gradient(circle at 20% 20%, white 1px, transparent 1px), radial-gradient(circle at 80% 60%, white 1px, transparent 1px)", backgroundSize: "32px 32px, 48px 48px" }} />
+      <div className="absolute -top-24 -right-16 h-72 w-72 rounded-full bg-purple-400/30 blur-3xl" />
+      <div className="absolute -bottom-24 -left-10 h-72 w-72 rounded-full bg-indigo-400/30 blur-3xl" />
+      <div className="relative p-6">
+        <div className="flex items-start justify-between flex-wrap gap-4">
+          <div className="flex items-center gap-3">
+            <Link to="/" className="p-2 rounded-lg bg-white/10 hover:bg-white/20 border border-white/20 text-white/90 backdrop-blur-sm transition">
+              <ArrowLeft className="h-4 w-4" />
+            </Link>
+            <div>
+              <div className="text-[10px] uppercase tracking-[0.18em] text-indigo-200/90 font-medium flex items-center gap-1.5">
+                <Sparkles className="h-3 w-3" /> CRQ Number
+              </div>
+              <h1 className="font-mono text-2xl font-bold tracking-tight mt-0.5">{crq.id}</h1>
+              <div className="flex items-center gap-2 mt-2">
+                <span className="inline-flex items-center gap-1 text-[11px] px-2.5 py-1 rounded-full bg-white/15 backdrop-blur-sm border border-white/25 text-white font-medium">
+                  <ShieldCheck className="h-3 w-3" /> {crq.status}
+                </span>
+                <span className="inline-flex items-center gap-1 text-[11px] px-2.5 py-1 rounded-full bg-white/10 border border-white/20 text-indigo-100">
+                  <Tag className="h-3 w-3" /> {plan.type}
+                </span>
+                <span className="inline-flex items-center gap-1 text-[11px] px-2.5 py-1 rounded-full bg-white/10 border border-white/20 text-indigo-100">
+                  <MapPin className="h-3 w-3" /> {crq.location ?? "—"}
+                </span>
+              </div>
+            </div>
+          </div>
+          <button
+            onClick={onPreview}
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white text-indigo-700 text-xs font-semibold hover:bg-indigo-50 shadow-lg shadow-indigo-900/20 transition"
+          >
+            <FileText className="h-3.5 w-3.5" /> Preview Plan PDF
+          </button>
+        </div>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mt-6">
+          {stats.map((s) => {
+            const Icon = s.icon;
+            return (
+              <div key={s.label} className="rounded-xl bg-white/95 backdrop-blur-sm p-3.5 shadow-sm ring-1 ring-white/40 hover:shadow-md transition">
+                <div className="flex items-center gap-2">
+                  <div className={cn("h-8 w-8 rounded-lg bg-gradient-to-br flex items-center justify-center ring-1", s.tone)}>
+                    <Icon className="h-4 w-4" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="text-[9px] uppercase tracking-wider text-slate-500 font-semibold">{s.label}</div>
+                    <div className="text-xs text-slate-800 font-semibold truncate" title={s.value}>{s.value}</div>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 /* ---------- shared collapsible card ---------- */
 
 function Section({
@@ -147,42 +208,59 @@ function Section({
   subtitle,
   defaultOpen = true,
   right,
+  accent = "indigo",
+  icon: SectionIcon,
   children,
 }: {
   title: string;
   subtitle?: string;
   defaultOpen?: boolean;
   right?: React.ReactNode;
+  accent?: "indigo" | "purple" | "emerald" | "amber";
+  icon?: React.ElementType;
   children: React.ReactNode;
 }) {
   const [open, setOpen] = useState(defaultOpen);
+  const accentMap: Record<string, string> = {
+    indigo: "from-indigo-500 to-indigo-600 shadow-indigo-500/30",
+    purple: "from-purple-500 to-purple-600 shadow-purple-500/30",
+    emerald: "from-emerald-500 to-emerald-600 shadow-emerald-500/30",
+    amber: "from-amber-500 to-amber-600 shadow-amber-500/30",
+  };
   return (
-    <div className="bg-white rounded-xl border border-slate-100 shadow-sm overflow-hidden">
-      <div className="flex items-center justify-between px-5 py-3.5 border-b border-slate-100">
+    <div className="bg-white rounded-2xl border border-slate-200/70 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
+      <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 bg-gradient-to-r from-slate-50/80 to-white">
         <button
           onClick={() => setOpen((o) => !o)}
-          className="flex items-center gap-2 text-left group"
+          className="flex items-center gap-3 text-left group"
         >
-          {open ? (
-            <ChevronDown className="h-4 w-4 text-slate-400 group-hover:text-slate-600" />
-          ) : (
-            <ChevronRight className="h-4 w-4 text-slate-400 group-hover:text-slate-600" />
-          )}
-          <span className="text-sm font-semibold text-slate-900">{title}</span>
-          {subtitle && <span className="text-xs text-slate-400">— {subtitle}</span>}
+          <div className={cn("h-9 w-9 rounded-xl bg-gradient-to-br flex items-center justify-center text-white shadow-md", accentMap[accent])}>
+            {SectionIcon ? <SectionIcon className="h-4 w-4" /> : <ClipboardList className="h-4 w-4" />}
+          </div>
+          <div className="flex flex-col">
+            <div className="flex items-center gap-1.5">
+              <span className="text-sm font-bold text-slate-900 tracking-tight">{title}</span>
+              {open ? (
+                <ChevronDown className="h-3.5 w-3.5 text-slate-400 group-hover:text-slate-600" />
+              ) : (
+                <ChevronRight className="h-3.5 w-3.5 text-slate-400 group-hover:text-slate-600" />
+              )}
+            </div>
+            {subtitle && <span className="text-xs text-slate-500">{subtitle}</span>}
+          </div>
         </button>
         {right}
       </div>
-      {open && <div className="p-5">{children}</div>}
+      {open && <div className="p-5 md:p-6">{children}</div>}
     </div>
   );
 }
 
 function Field({ label, value, mono }: { label: string; value: React.ReactNode; mono?: boolean }) {
   return (
-    <div>
-      <div className="text-[10px] uppercase tracking-wide text-slate-400 mb-1">{label}</div>
-      <div className={cn("text-sm text-slate-800", mono && "font-mono text-xs")}>{value}</div>
+    <div className="group relative rounded-lg p-3 -m-1 hover:bg-gradient-to-br hover:from-indigo-50/40 hover:to-purple-50/20 transition-colors">
+      <div className="text-[10px] uppercase tracking-wider text-slate-400 font-semibold mb-1 group-hover:text-indigo-500 transition-colors">{label}</div>
+      <div className={cn("text-sm text-slate-800 font-medium leading-relaxed", mono && "font-mono text-xs text-slate-700")}>{value}</div>
     </div>
   );
 }
@@ -194,16 +272,18 @@ function PlanDetailsSectionInner({ plan, onPreview, crqId }: { plan: Plan; onPre
     <Section
       title="Plan Details"
       subtitle="Plan attributes, execution window, team & tasks"
+      icon={ClipboardList}
+      accent="indigo"
       right={
         <button
           onClick={onPreview}
-          className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md border border-slate-200 bg-white hover:bg-slate-50 text-xs text-slate-700"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-indigo-200 bg-indigo-50/50 hover:bg-indigo-100 text-xs font-medium text-indigo-700 transition"
         >
           <FileText className="h-3.5 w-3.5" /> Preview Plan PDF
         </button>
       }
     >
-      <div className="grid grid-cols-2 lg:grid-cols-3 gap-5 mb-6">
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 mb-6">
         <Field label="Plan ID" value={plan.id} mono />
         <Field label="Plan Name" value={plan.description || "Plan"} />
         <Field label="Planned Activity" value={plan.type} />
@@ -211,20 +291,25 @@ function PlanDetailsSectionInner({ plan, onPreview, crqId }: { plan: Plan; onPre
         <Field label="Assigned Team" value="IP Access — CCB North" />
         <Field label="Total CRQs" value={String(plan.crqs.length)} />
       </div>
-      <div className="text-xs font-semibold text-indigo-600 mb-3">
-        {crqId ? `Tasks for ${crqId}` : "Tasks per CRQ"}
+      <div className="flex items-center gap-2 mb-3">
+        <div className="h-6 w-1 rounded-full bg-gradient-to-b from-indigo-500 to-purple-500" />
+        <span className="text-xs font-bold text-slate-800 uppercase tracking-wider">
+          {crqId ? `Tasks for ${crqId}` : "Tasks per CRQ"}
+        </span>
+        <div className="h-px flex-1 bg-gradient-to-r from-slate-200 to-transparent" />
       </div>
       <div className="space-y-4">
         {(crqId ? plan.crqs.filter((c) => c.id === crqId) : plan.crqs).map((c) => {
           const tasks = TASKS_BY_CRQ[c.id] ?? TASKS_BY_CRQ.default;
           return (
-            <div key={c.id} className="border border-slate-100 rounded-lg overflow-hidden">
-              <div className="flex items-center justify-between px-4 py-2 bg-slate-50/70 border-b border-slate-100">
+            <div key={c.id} className="border border-slate-200/70 rounded-xl overflow-hidden bg-white shadow-sm">
+              <div className="flex items-center justify-between px-4 py-2.5 bg-gradient-to-r from-indigo-50 via-purple-50/40 to-transparent border-b border-slate-100">
                 <div className="flex items-center gap-2">
-                  <span className="text-[10px] uppercase tracking-wide text-slate-400">CRQ</span>
-                  <span className="font-mono text-xs text-slate-800">{c.id}</span>
+                  <GitBranch className="h-3.5 w-3.5 text-indigo-500" />
+                  <span className="text-[10px] uppercase tracking-wider text-slate-500 font-semibold">CRQ</span>
+                  <span className="font-mono text-xs text-slate-900 font-bold">{c.id}</span>
                 </div>
-                <span className="text-[11px] text-slate-500">{tasks.length} task{tasks.length === 1 ? "" : "s"}</span>
+                <span className="text-[11px] text-indigo-700 font-semibold px-2 py-0.5 rounded-full bg-indigo-100/70">{tasks.length} task{tasks.length === 1 ? "" : "s"}</span>
               </div>
               <div className="divide-y divide-slate-100">
                 {tasks.map((t) => (
@@ -240,16 +325,24 @@ function PlanDetailsSectionInner({ plan, onPreview, crqId }: { plan: Plan; onPre
 }
 
 function TaskDetailCard({ task }: { task: Task }) {
+  const statusAccent: Record<string, string> = {
+    Open: "from-sky-400 to-sky-500",
+    "In Progress": "from-amber-400 to-orange-500",
+    Completed: "from-emerald-400 to-emerald-600",
+    Pending: "from-slate-300 to-slate-400",
+    Failed: "from-red-400 to-red-600",
+  };
   return (
-    <div className="p-4 grid grid-cols-2 md:grid-cols-3 gap-4 bg-white">
+    <div className="relative p-4 pl-5 grid grid-cols-2 md:grid-cols-3 gap-4 bg-white hover:bg-slate-50/50 transition-colors">
+      <div className={cn("absolute left-0 top-3 bottom-3 w-1 rounded-r-full bg-gradient-to-b", statusAccent[task.status] ?? "from-slate-300 to-slate-400")} />
       <Field label="Task ID" value={task.id} mono />
       <Field label="NE Label" value={task.neLabel} mono />
       <Field label="Plan Activity Details" value={task.planActivity} />
       <div>
-        <div className="text-[10px] uppercase tracking-wide text-slate-400 mb-1">Task Profile Type</div>
-        <div className="flex flex-wrap gap-1">
+        <div className="text-[10px] uppercase tracking-wider text-slate-400 font-semibold mb-1.5">Task Profile Type</div>
+        <div className="flex flex-wrap gap-1.5">
           {task.profileTypes.map((p) => (
-            <span key={p} className="text-[10px] px-1.5 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-100">{p}</span>
+            <span key={p} className="text-[10px] px-2 py-0.5 rounded-full bg-gradient-to-r from-indigo-50 to-purple-50 text-indigo-700 border border-indigo-200/70 font-semibold">{p}</span>
           ))}
         </div>
       </div>
@@ -258,7 +351,10 @@ function TaskDetailCard({ task }: { task: Task }) {
       <Field
         label="Task Status"
         value={
-          <span className={cn("text-[11px] px-2 py-0.5 rounded-full inline-block", TASK_STATUS_STYLES[task.status])}>{task.status}</span>
+          <span className={cn("text-[11px] px-2.5 py-1 rounded-full inline-flex items-center gap-1.5 font-semibold border", TASK_STATUS_STYLES[task.status])}>
+            <span className="h-1.5 w-1.5 rounded-full bg-current opacity-70" />
+            {task.status}
+          </span>
         }
       />
     </div>
@@ -274,8 +370,8 @@ function CrqDetailsSection({ crq, plan, currentStageName }: { crq: CRQRecord; pl
     ? buildStages(crq).find((s) => s.name === currentStageName)?.fields ?? []
     : [];
   return (
-    <Section title="CRQ Details" subtitle="Full change request attributes">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5">
+    <Section title="CRQ Details" subtitle="Full change request attributes" icon={ShieldCheck} accent="purple">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-1">
         <Field label="CRQ Number" value={crq.id} mono />
         <Field label="Plan Reference" value={plan.id} mono />
         <Field label="Change Type" value={plan.type} />
@@ -311,10 +407,11 @@ function CrqDetailsSection({ crq, plan, currentStageName }: { crq: CRQRecord; pl
       {stageFields.length > 0 && (
         <>
           <div className="mt-6 mb-3 flex items-center gap-2">
-            <span className="text-[10px] uppercase tracking-wide font-semibold text-indigo-600">{currentStageName} — Stage Details</span>
-            <span className="h-px flex-1 bg-slate-100" />
+            <div className="h-6 w-1 rounded-full bg-gradient-to-b from-purple-500 to-indigo-500" />
+            <span className="text-xs uppercase tracking-wider font-bold text-slate-800">{currentStageName} — Stage Details</span>
+            <div className="h-px flex-1 bg-gradient-to-r from-slate-200 to-transparent" />
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-1">
             {stageFields.map((f) => (
               <Field key={f.label} label={f.label} value={f.value} mono={f.label.toLowerCase().includes("time") || f.label.toLowerCase().includes("date")} />
             ))}
@@ -481,9 +578,11 @@ function StageDetailsSection({ crq, currentStageName }: { crq: CRQRecord; curren
   return (
     <Section
       title="Stage-wise CRQ Details"
+      icon={Layers}
+      accent="emerald"
       subtitle={currentStageName ? `Current & previous stages up to ${currentStageName}` : "Field-level details captured at each workflow stage"}
     >
-      <div className="flex flex-wrap gap-2 mb-5 border-b border-slate-100 pb-3">
+      <div className="flex flex-wrap gap-2 mb-5 border-b border-slate-100 pb-4">
         {stages.map((s) => {
           const isActive = s.name === active;
           return (
@@ -491,10 +590,10 @@ function StageDetailsSection({ crq, currentStageName }: { crq: CRQRecord; curren
               key={s.name}
               onClick={() => setActive(s.name)}
               className={cn(
-                "text-xs px-3 py-1.5 rounded-lg border transition",
+                "text-xs px-3.5 py-2 rounded-lg border font-medium transition",
                 isActive
-                  ? "bg-indigo-600 text-white border-indigo-600 shadow-sm"
-                  : "bg-white text-slate-600 border-slate-200 hover:border-indigo-300 hover:text-indigo-600",
+                  ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white border-transparent shadow-md shadow-indigo-500/30"
+                  : "bg-white text-slate-600 border-slate-200 hover:border-indigo-300 hover:text-indigo-600 hover:bg-indigo-50/40",
               )}
             >
               {s.name}
@@ -505,7 +604,7 @@ function StageDetailsSection({ crq, currentStageName }: { crq: CRQRecord; curren
           );
         })}
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-5">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-1">
         {current.fields.map((f) => (
           <Field key={f.label} label={f.label} value={f.value} mono={f.label.toLowerCase().includes("time") || f.label.toLowerCase().includes("date")} />
         ))}
@@ -523,7 +622,7 @@ function ValidationSection({ crq, stage }: { crq: CRQRecord; stage?: string }) {
     );
   }
   return (
-    <Section title="Validation" subtitle="Checkpoint-wise validation status">
+    <Section title="Validation" subtitle="Checkpoint-wise validation status" icon={CheckCircle2} accent="amber">
       <ValidationPanel />
     </Section>
   );
