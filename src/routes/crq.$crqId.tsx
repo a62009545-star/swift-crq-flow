@@ -407,10 +407,11 @@ function CrqDetailsSection({ crq, plan, currentStageName }: { crq: CRQRecord; pl
       {stageFields.length > 0 && (
         <>
           <div className="mt-6 mb-3 flex items-center gap-2">
-            <span className="text-[10px] uppercase tracking-wide font-semibold text-indigo-600">{currentStageName} — Stage Details</span>
-            <span className="h-px flex-1 bg-slate-100" />
+            <div className="h-6 w-1 rounded-full bg-gradient-to-b from-purple-500 to-indigo-500" />
+            <span className="text-xs uppercase tracking-wider font-bold text-slate-800">{currentStageName} — Stage Details</span>
+            <div className="h-px flex-1 bg-gradient-to-r from-slate-200 to-transparent" />
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-1">
             {stageFields.map((f) => (
               <Field key={f.label} label={f.label} value={f.value} mono={f.label.toLowerCase().includes("time") || f.label.toLowerCase().includes("date")} />
             ))}
@@ -577,9 +578,11 @@ function StageDetailsSection({ crq, currentStageName }: { crq: CRQRecord; curren
   return (
     <Section
       title="Stage-wise CRQ Details"
+      icon={Layers}
+      accent="emerald"
       subtitle={currentStageName ? `Current & previous stages up to ${currentStageName}` : "Field-level details captured at each workflow stage"}
     >
-      <div className="flex flex-wrap gap-2 mb-5 border-b border-slate-100 pb-3">
+      <div className="flex flex-wrap gap-2 mb-5 border-b border-slate-100 pb-4">
         {stages.map((s) => {
           const isActive = s.name === active;
           return (
@@ -587,10 +590,10 @@ function StageDetailsSection({ crq, currentStageName }: { crq: CRQRecord; curren
               key={s.name}
               onClick={() => setActive(s.name)}
               className={cn(
-                "text-xs px-3 py-1.5 rounded-lg border transition",
+                "text-xs px-3.5 py-2 rounded-lg border font-medium transition",
                 isActive
-                  ? "bg-indigo-600 text-white border-indigo-600 shadow-sm"
-                  : "bg-white text-slate-600 border-slate-200 hover:border-indigo-300 hover:text-indigo-600",
+                  ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white border-transparent shadow-md shadow-indigo-500/30"
+                  : "bg-white text-slate-600 border-slate-200 hover:border-indigo-300 hover:text-indigo-600 hover:bg-indigo-50/40",
               )}
             >
               {s.name}
@@ -601,7 +604,7 @@ function StageDetailsSection({ crq, currentStageName }: { crq: CRQRecord; curren
           );
         })}
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-5">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-1">
         {current.fields.map((f) => (
           <Field key={f.label} label={f.label} value={f.value} mono={f.label.toLowerCase().includes("time") || f.label.toLowerCase().includes("date")} />
         ))}
@@ -619,7 +622,7 @@ function ValidationSection({ crq, stage }: { crq: CRQRecord; stage?: string }) {
     );
   }
   return (
-    <Section title="Validation" subtitle="Checkpoint-wise validation status">
+    <Section title="Validation" subtitle="Checkpoint-wise validation status" icon={CheckCircle2} accent="amber">
       <ValidationPanel />
     </Section>
   );
