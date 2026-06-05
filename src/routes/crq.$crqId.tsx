@@ -258,9 +258,10 @@ function Section({
 
 function Field({ label, value, mono }: { label: string; value: React.ReactNode; mono?: boolean }) {
   return (
-    <div className="group relative rounded-lg p-3 -m-1 hover:bg-gradient-to-br hover:from-indigo-50/40 hover:to-purple-50/20 transition-colors">
-      <div className="text-[10px] uppercase tracking-wider text-slate-400 font-semibold mb-1 group-hover:text-indigo-500 transition-colors">{label}</div>
-      <div className={cn("text-sm text-slate-800 font-medium leading-relaxed", mono && "font-mono text-xs text-slate-700")}>{value}</div>
+    <div className="group relative rounded-xl border border-slate-200/70 bg-gradient-to-br from-white to-slate-50/60 px-3.5 py-2.5 hover:border-indigo-300 hover:shadow-sm hover:from-indigo-50/40 hover:to-white transition-all">
+      <div className="absolute left-0 top-2.5 bottom-2.5 w-[2px] rounded-r-full bg-gradient-to-b from-indigo-400 to-purple-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+      <div className="text-[9px] uppercase tracking-[0.12em] text-slate-500 font-bold mb-1 group-hover:text-indigo-600 transition-colors">{label}</div>
+      <div className={cn("text-sm text-slate-900 font-semibold leading-snug break-words", mono && "font-mono text-[12px] text-slate-800 tracking-tight")}>{value}</div>
     </div>
   );
 }
